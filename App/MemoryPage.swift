@@ -26,7 +26,9 @@ struct MemoryPage: View {
                 .padding(.horizontal)
             }
             .navigationTitle(item.title ?? String(localized: "Unnamed memory"))
-            .navigationBarTitleDisplayMode(.inline)
+            #if os(iOS)
+                .navigationBarTitleDisplayMode(.inline)
+            #endif
         } else {
             Text("Item not found")
         }
