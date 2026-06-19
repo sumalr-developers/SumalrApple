@@ -52,14 +52,23 @@ import WebKit
                                 }
                             }
                         }
+                        .navigationDestination(isPresented: $showSetupSheet) {
+                            SetupPage { client in
+                                Task {
+                                    await setupRlamus.send(client)
+                                }
+                            }
+                            .navigationBarBackButtonHidden()
+                        }
                     }
                 }
-                .sheet(isPresented: $showSetupSheet, onDismiss: { /* noop */ }) {
+                .sheet(isPresented: $showSetupSheet) {
                     SetupPage { client in
                         Task {
                             await setupRlamus.send(client)
                         }
                     }
+                    .interactiveDismissDisabled()
                 }
         }
         .environment(\.showWebPreview, $showWebPreview)
@@ -88,12 +97,13 @@ import WebKit
                     MemoryPage()
                 }
             }
-            .sheet(isPresented: $showSetupSheet, onDismiss: { /* noop */ }) {
+            .sheet(isPresented: $showSetupSheet) {
                 SetupPage { client in
                     Task {
                         await setupRlamus.send(client)
                     }
                 }
+                .interactiveDismissDisabled()
             }
         }
         .environment(\.showWebPreview, $showWebPreview)
@@ -109,6 +119,7 @@ import WebKit
         }
         showSetupSheet = true
         for await client in setupRlamus {
+            showSetupSheet = false
             rlamusClient = client
             return client
         }

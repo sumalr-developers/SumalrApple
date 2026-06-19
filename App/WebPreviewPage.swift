@@ -118,15 +118,19 @@ fileprivate struct NavigationBar: View {
                 .introspect(.textField, on: .iOS(.v13...)) { textField in
                     textField.clearButtonMode = .whileEditing
                 }
+                .textInputAutocapitalization(.never)
             #endif
+                .autocorrectionDisabled()
+                .textContentType(.URL)
                 .frame(maxWidth: .infinity)
+                .frame(height: 48)
                 .textFieldStyle(.plain)
-                .padding(8)
+                .padding(.horizontal)
             if isLoading {
                 ProgressView()
                     .progressViewStyle(.circular)
                     .controlSize(.small)
-                    .padding(.horizontal, 8)
+                    .padding(.trailing, 8)
             }
         }
         .background(Capsule().foregroundStyle(.primary.opacity(0.2)))

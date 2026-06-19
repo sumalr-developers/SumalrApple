@@ -11,7 +11,7 @@ struct AccountPage: View {
         .formStyle(.grouped)
         .padding()
     }
-    
+
     struct BackendSection: View {
         @Environment(\.rlamusClient) var rlamusClient
 
@@ -21,6 +21,11 @@ struct AccountPage: View {
         var body: some View {
             Section("Backend") {
                 TextField("Rlamus server URL", text: $endpointBuffer)
+                    .autocorrectionDisabled()
+                #if os(iOS)
+                    .textInputAutocapitalization(.never)
+                #endif
+                    .textContentType(.URL)
                     .submitLabel(.done)
                     .onAppear {
                         endpointBuffer = rlamusClient.wrappedValue?.endpoint.absoluteString ?? ""

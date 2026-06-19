@@ -8,16 +8,19 @@ struct SetupPage: View {
     let action: (RlamusClient) -> Void
     
     var body: some View {
-        Form {
-            AccountPage.BackendSection()
-                .environment(\.rlamusClient, $clientBuffer)
-            Section {
-                Button("Continue", role: .confirm) {
-                    action(clientBuffer!)
+        NavigationStack {
+            Form {
+                AccountPage.BackendSection()
+                    .environment(\.rlamusClient, $clientBuffer)
+                Section {
+                    Button("Continue", role: .confirm) {
+                        action(clientBuffer!)
+                    }
+                    .disabled(clientBuffer == nil)
                 }
-                .disabled(clientBuffer != nil)
             }
+            .formStyle(.grouped)
+            .navigationTitle("Setup")
         }
-        .formStyle(.grouped)
     }
 }
