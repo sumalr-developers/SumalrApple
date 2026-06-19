@@ -61,6 +61,7 @@ struct MemoryItemView: View {
     @Environment(\.rlamusClient) var rlamusClient
     @Environment(\.errorHandler) var errorHandler
     @Environment(\.realm) var realm
+    @Environment(\.scenePhase) var scenePhase
 
     let item: MemoryItem
     @State var isLoading: Bool
@@ -73,12 +74,18 @@ struct MemoryItemView: View {
         progress = 0
         errorMessage = nil
     }
+    
+    private struct ItemIDScenePhaseTuple: Equatable {
+        let scene: ScenePhase
+        let itemId: UInt64
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
             if isLoading {
                 ProgressView(value: Float(progress), total: 3)
                     .frame(maxWidth: .infinity)
+                    .animation(.default, value: progress)
             }
             if let title = item.title {
                 Text(title)
@@ -103,8 +110,8 @@ struct MemoryItemView: View {
                 }
             }
         }
-        .task(id: item.id) {
-            if item.summary != nil {
+        .task(id: ItemIDScenePhaseTuple(scene: scenePhase, itemId: item.id)) {
+            if item.summary != nil || scenePhase != .active {
                 return
             }
 
