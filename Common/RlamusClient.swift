@@ -1,21 +1,48 @@
-import Foundation
 import EventSource
+import Foundation
 import HTTPTypes
 import HTTPTypesFoundation
 
 public struct RlamusClient {
     public var endpoint: URL
     public var urlSession: URLSession
-    
+
     public init(endpoint: URL, urlSession: URLSession = .shared) {
         self.endpoint = endpoint
         self.urlSession = urlSession
     }
 
+    public func verify() async throws (VerifyError) {
+        if endpoint.scheme == nil {
+            throw .invalidEndpoint
+        }
+        let request = HTTPRequest(url: endpoint)
+        let (data, res): (Data, HTTPResponse)
+        do {
+            (data, res) = try await urlSession.data(for: request)
+        } catch {
+            throw .io(error)
+        }
+        guard res.status == .ok else {
+            throw .unexpectedStatus(res.status)
+        }
+
+        guard let signatures = String(data: data, encoding: .utf8)?.split(separator: " "),
+              signatures.first == "rlamus-server",
+              let apiSignature = signatures.first(where: { $0.starts(with: "api:") }),
+              let apiVersion = Int(apiSignature[apiSignature.index(apiSignature.startIndex, offsetBy: 4)...])
+        else {
+            throw .invalidServer(compatVersion: nil)
+        }
+        guard apiVersion == 1 else {
+            throw .invalidServer(compatVersion: nil)
+        }
+    }
+
     public func createTask(url: String) async throws (CreateTaskError) -> UUID {
         var request = HTTPRequest(method: .post, url: endpoint.appending(component: "task"))
         request.headerFields[.contentType] = "application/x-www-form-urlencoded"
-        
+
         let (data, res): (Data, HTTPResponse)
         do {
             (data, res) = try await urlSession.upload(for: request, from: "url=\(url.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)".data(using: .utf8)!)
@@ -69,7 +96,7 @@ public struct RlamusClient {
                     continuation.finish(throwing: StreamTaskError.unexpectedStatus(res.status))
                     return
                 }
-                
+
                 let decoder = JSONDecoder()
                 do {
                     for try await event in stream.events {
@@ -87,8 +114,8 @@ public struct RlamusClient {
             }
         }
     }
-    
-    func deleteTask(id: UUID) async throws(DeleteTaskError) {
+
+    func deleteTask(id: UUID) async throws (DeleteTaskError) {
         let request = HTTPRequest(method: .delete, url: endpoint.appending(components: "task", id.uuidString))
         let (_, res): (Data, HTTPResponse)
         do {
@@ -102,6 +129,13 @@ public struct RlamusClient {
             throw .unexpectedStatus(res.status)
         }
     }
+}
+
+public enum VerifyError: Error {
+    case io(any Error)
+    case invalidEndpoint
+    case unexpectedStatus(HTTPResponse.Status)
+    case invalidServer(compatVersion: Int?)
 }
 
 public enum CreateTaskError: Error {

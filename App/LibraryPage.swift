@@ -50,7 +50,7 @@ struct LibraryPage: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Add", systemImage: "plus") {
-                    showWebPreview.wrappedValue = true
+                    showWebPreview.wrappedValue = !showWebPreview.wrappedValue
                 }
             }
         }
