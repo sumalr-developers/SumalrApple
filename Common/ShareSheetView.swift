@@ -49,6 +49,9 @@ public struct ShareSheetView: View {
                     for item in sharedItems {
                         let url = try await item.loadObject(ofType: URL.self)
                         let item = try await addMemory(url: url, client: rlamusClient)
+                        if let title = try? await getWebPageTitle(url: url) {
+                            item.title = title
+                        }
                         try realm.write {
                             realm.add(item)
                         }

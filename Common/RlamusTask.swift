@@ -1,12 +1,12 @@
 import Foundation
 
-public struct RlamusTask: Decodable, Equatable {
+public struct RlamusTask: Decodable, Equatable, Sendable {
     public var id: UUID
     public var url: URL
     public var state: RlamusTaskState = .`init`
 }
 
-public enum RlamusTaskState: Equatable {
+public enum RlamusTaskState: Equatable, Sendable {
     case `init`
     case scraping
     case summarizing
