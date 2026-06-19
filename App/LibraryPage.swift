@@ -74,7 +74,7 @@ struct MemoryItemView: View {
         progress = 0
         errorMessage = nil
     }
-    
+
     private struct ItemIDScenePhaseTuple: Equatable {
         let scene: ScenePhase
         let itemId: UInt64
@@ -94,13 +94,20 @@ struct MemoryItemView: View {
                     .padding(.bottom, 4)
             }
             if let summary = item.summary {
-                StructuredText(markdown: summary)
+                StructuredText(markdown: {
+                    if summary.count > 150 {
+                        summary.prefix(150).trimmingCharacters(in: .whitespacesAndNewlines) + "..."
+                    } else {
+                        summary
+                    }
+                }())
                     .textual.textSelection(.enabled)
             }
             if let errorMessage {
                 Text(errorMessage)
                     .foregroundStyle(.red)
             }
+            Spacer()
             Link(destination: URL(string: item.url)!) {
                 HStack {
                     Image(systemName: "safari")
@@ -164,12 +171,23 @@ struct MemoryItemView: View {
 }
 
 #Preview {
-    MemoryItemView({
-        let r = MemoryItem()
-        r.summary = "Example domain is for demostration purpose only and shouldn't be used in production."
-        r.title = "Some page"
-        r.url = "https://example.com"
-        return r
-    }())
-        .padding()
+    VStack {
+        MemoryItemView({
+            let r = MemoryItem()
+            r.summary = "Example domain is for demostration purpose only and shouldn't be used in production."
+            r.title = "Some page"
+            r.url = "https://example.com"
+            return r
+        }())
+            .padding()
+        
+        MemoryItemView({
+            let r = MemoryItem()
+            r.summary = Array.init(repeating: "Example domain is for demostration purpose only and shouldn't be used in production.", count: 50).joined(separator: "\n")
+            r.title = "Some page"
+            r.url = "https://example.com"
+            return r
+        }())
+            .padding()
+    }
 }
