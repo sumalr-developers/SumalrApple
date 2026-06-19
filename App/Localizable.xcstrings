@@ -7,19 +7,10 @@
     "Add" : {
 
     },
-    "Backend" : {
-
-    },
     "Close" : {
 
     },
-    "Continue" : {
-
-    },
     "Could not parse the address of your input" : {
-
-    },
-    "Could not parse the URL" : {
 
     },
     "Created %@ ago" : {
@@ -34,40 +25,16 @@
     "Invalid address" : {
 
     },
-    "Invalid backend (compatibility version %lld)" : {
-
-    },
-    "Invalid backend (invalid signature)" : {
-
-    },
-    "Invalid response. Got status %lld." : {
-
-    },
     "Item not found" : {
 
     },
     "Library" : {
 
     },
-    "Network error. %@" : {
-
-    },
     "New from URL" : {
 
     },
-    "Paused for input sattle" : {
-
-    },
-    "Rlamus server URL" : {
-
-    },
-    "Setup" : {
-
-    },
     "Sumalr" : {
-
-    },
-    "The URL is not supported" : {
 
     },
     "Unnamed memory" : {
@@ -77,12 +44,6 @@
 
     },
     "Use" : {
-
-    },
-    "Valid backend" : {
-
-    },
-    "Verifying backend..." : {
 
     }
   },

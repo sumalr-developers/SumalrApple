@@ -19,6 +19,8 @@
 		6A4523D32FE3A41900EA5AD2 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523D12FE3A41900EA5AD2 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A566DA72FE52E5800378452 /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DA62FE52E5800378452 /* Transmission */; };
 		6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DB72FE54F0C00378452 /* AsyncAlgorithms */; };
+		6A566DC32FE579E100378452 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DC22FE579E100378452 /* RealmSwift */; };
+		6A566DC42FE579E100378452 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DC22FE579E100378452 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A6432652FE44CED00D2368A /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432642FE44CED00D2368A /* Logging */; };
 		6A64326A2FE4547300D2368A /* Textual in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432692FE4547300D2368A /* Textual */; };
 		6A695FE32FE2356700DB08E0 /* macOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FD72FE2356600DB08E0 /* macOSShare.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -89,6 +91,7 @@
 			dstPath = "";
 			dstSubfolder = Frameworks;
 			files = (
+				6A566DC42FE579E100378452 /* RealmSwift in Embed Frameworks */,
 				6A3065CD2FE2D10F00C9BE5A /* Common.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -135,6 +138,7 @@
 
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* Sumalr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sumalr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A566DC52FE57A4700378452 /* Sumalr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sumalr.entitlements; sourceTree = "<group>"; };
 		6A695FD72FE2356600DB08E0 /* macOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = macOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A695FEC2FE235B800DB08E0 /* iOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF0C6B42FE23C1500B2E764 /* Common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -215,6 +219,7 @@
 		6A695FE92FE235B800DB08E0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				6A566DC32FE579E100378452 /* RealmSwift in Frameworks */,
 				6A3065CC2FE2D10F00C9BE5A /* Common.framework in Frameworks */,
 			);
 		};
@@ -239,6 +244,7 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				6A566DC52FE57A4700378452 /* Sumalr.entitlements */,
 				000000000000000000000010 /* App */,
 				6A695FD82FE2356600DB08E0 /* macOSShare */,
 				6A695FED2FE235B800DB08E0 /* iOSShare */,
@@ -353,6 +359,9 @@
 				6A695FED2FE235B800DB08E0 /* iOSShare */,
 			);
 			name = iOSShare;
+			packageProductDependencies = (
+				6A566DC22FE579E100378452 /* RealmSwift */,
+			);
 			productName = iOSShare;
 			productReference = 6A695FEC2FE235B800DB08E0 /* iOSShare.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -632,6 +641,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 				XROS_DEPLOYMENT_TARGET = 27.0;
 			};
@@ -695,6 +705,7 @@
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
 				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 				XROS_DEPLOYMENT_TARGET = 27.0;
 			};
@@ -703,6 +714,7 @@
 		000000000000000111000000 /* Debug configuration for PBXNativeTarget "Sumalr" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Sumalr.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -752,6 +764,7 @@
 		000000000000000112000000 /* Release configuration for PBXNativeTarget "Sumalr" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Sumalr.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -826,7 +839,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -858,13 +871,14 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
 		6A695FF92FE235B800DB08E0 /* Debug configuration for PBXNativeTarget "iOSShare" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = iOSShare/iOSShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3B535J795R;
@@ -880,6 +894,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhufucdev.YW0FOS7E.Sumalr.iOSShare;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -890,7 +905,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -898,6 +913,7 @@
 		6A695FFA2FE235B800DB08E0 /* Release configuration for PBXNativeTarget "iOSShare" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = iOSShare/iOSShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3B535J795R;
@@ -913,6 +929,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhufucdev.YW0FOS7E.Sumalr.iOSShare;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -923,7 +940,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -969,7 +986,7 @@
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1017,7 +1034,7 @@
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1045,7 +1062,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sumalr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sumalr";
 				XROS_DEPLOYMENT_TARGET = 27.0;
@@ -1072,7 +1089,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sumalr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sumalr";
 				XROS_DEPLOYMENT_TARGET = 27.0;
@@ -1244,6 +1261,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A566DB62FE54F0C00378452 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
 			productName = AsyncAlgorithms;
+		};
+		6A566DC22FE579E100378452 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AA9963D2FE2E3BA008625C7 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 		6A6432642FE44CED00D2368A /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;

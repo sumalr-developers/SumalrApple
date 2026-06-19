@@ -9,6 +9,8 @@ import Foundation
 import Realm
 import RealmSwift
 
+let APP_GROUP_ID = "group.zhufucdev.sumalr"
+
 public func addMemory(url: URL, client: RlamusClient) async throws (CreateTaskError) -> MemoryItem {
     let item = MemoryItem(id: ObjectId.generate())
     item.url = url.absoluteString

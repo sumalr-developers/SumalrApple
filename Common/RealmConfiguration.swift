@@ -6,6 +6,7 @@ let currentVersion: UInt64 = 1
 
 public var realmConfig: Realm.Configuration {
     Realm.Configuration(
+        fileURL: FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: APP_GROUP_ID)!.appending(component: "realm"),
         schemaVersion: currentVersion,
         migrationBlock: { migration, oldVersion in
             let migrations: [UInt64: (Migration) -> Void] = [

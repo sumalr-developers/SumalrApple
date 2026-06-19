@@ -10,7 +10,7 @@ public class MemoryItem: Object, ObjectKeyIdentifiable {
     @Persisted public var taskID: UUID
     @Persisted public var creation: Date
 
-    convenience init(id: ObjectId) {
+    public convenience init(id: ObjectId) {
         self.init()
         _id = id
     }

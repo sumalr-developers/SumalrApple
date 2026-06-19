@@ -6,13 +6,7 @@ import WebKit
 
 @main struct SumalrApp: App {
     @State var realm = try! Realm(configuration: realmConfig)
-    @State var rlamusClient: RlamusClient? = {
-        guard let setUrl = UserDefaults.standard.string(forKey: "rlamusURL"),
-              let endpoint = URL(string: setUrl) else {
-            return nil
-        }
-        return RlamusClient(endpoint: endpoint)
-    }()
+    @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
 
     @State var showWebPreview = false
     @State var webPreviewPage = WebPage()
@@ -63,12 +57,14 @@ import WebKit
                     }
                 }
                 .sheet(isPresented: $showSetupSheet) {
-                    SetupPage { client in
-                        Task {
-                            await setupRlamus.send(client)
+                    NavigationStack {
+                        SetupPage { client in
+                            Task {
+                                await setupRlamus.send(client)
+                            }
                         }
+                        .interactiveDismissDisabled()
                     }
-                    .interactiveDismissDisabled()
                 }
         }
         .environment(\.showWebPreview, $showWebPreview)
@@ -77,7 +73,7 @@ import WebKit
         .environment(\.getRlamusClient, getRlamusClient)
         .environment(\.realm, realm)
         .onChange(of: rlamusClient?.endpoint, { _, newValue in
-            UserDefaults.standard.setValue(newValue?.absoluteString, forKey: "rlamusURL")
+            setRlamusTo(userDefaults: .appGroup, endpoint: newValue)
         })
         .commands {
             CommandGroup(replacing: .newItem) {
@@ -98,12 +94,14 @@ import WebKit
                 }
             }
             .sheet(isPresented: $showSetupSheet) {
-                SetupPage { client in
-                    Task {
-                        await setupRlamus.send(client)
+                NavigationStack {
+                    SetupPage { client in
+                        Task {
+                            await setupRlamus.send(client)
+                        }
                     }
+                    .interactiveDismissDisabled()
                 }
-                .interactiveDismissDisabled()
             }
         }
         .environment(\.showWebPreview, $showWebPreview)

@@ -5,26 +5,30 @@
 //  Created by Caturday Reed on 2026/6/17.
 //
 
+import Common
+import RealmSwift
+import SwiftUI
 import UIKit
-import Social
 
-class ShareViewController: SLComposeServiceViewController {
+class ShareViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-    override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
-        return true
+        let attachments = extensionContext?.inputItems.flatMap { ($0 as! NSExtensionItem).attachments ?? [] } ?? []
+        let hostingController = UIHostingController(rootView: ShareSheetView(attachments).environment(\.dismissSharesheet, dismiss))
+
+        hostingController.view.frame = view.bounds
+        view.addSubview(hostingController.view)
+        addChild(hostingController)
+        
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        hostingController.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        hostingController.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        hostingController.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
     }
 
-    override func didSelectPost() {
-        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
-    
-        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+    func dismiss() {
+        extensionContext?.completeRequest(returningItems: nil)
     }
-
-    override func configurationItems() -> [Any]! {
-        // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
-        return []
-    }
-
 }
