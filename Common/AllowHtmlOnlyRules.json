@@ -1,0 +1,9 @@
+[{
+    "trigger": {
+        "url-filter": ".*",
+        "resource-type": ["image", "style-sheet", "font", "media", "child-document", "raw"]
+    },
+    "action": {
+        "type": "block"
+    }
+}]

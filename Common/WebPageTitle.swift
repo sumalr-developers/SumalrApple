@@ -4,6 +4,18 @@ import WebKit
 @MainActor
 public func getWebPageTitle(url: URL, session: URLSession = .shared) async throws -> String? {
     let webview = WKWebView()
+    let config = WKWebViewConfiguration()
+    config.websiteDataStore = .nonPersistent()
+    let cbID = "com.zhufucdev.getWebPageTitle"
+    let store = WKContentRuleListStore.default()!
+    if let rule = try? await store.contentRuleList(forIdentifier: cbID) {
+        config.userContentController.add(rule)
+    } else {
+        let rulesURL = Bundle(for: NavigationDeleage.self).url(forResource: "AllowHtmlOnlyRules", withExtension: "json")!
+        let jsonContent = try! Data(contentsOf: rulesURL)
+        let rule = try await store.compileContentRuleList(forIdentifier: cbID, encodedContentRuleList: String(data: jsonContent, encoding: .utf8))!
+        config.userContentController.add(rule)
+    }
     let delegate = NavigationDeleage()
     webview.navigationDelegate = delegate
     return await withCheckedContinuation { continuation in
