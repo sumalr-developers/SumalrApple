@@ -3,7 +3,7 @@ import Realm
 import RealmSwift
 
 public class MemoryItem: Object, ObjectKeyIdentifiable {
-    @Persisted(primaryKey: true) public var _id: ObjectId = ObjectId()
+    @Persisted(primaryKey: true) public var _id: ObjectId = ObjectId.generate()
     @Persisted public var url: String
     @Persisted public var title: String?
     @Persisted public var summary: String?
