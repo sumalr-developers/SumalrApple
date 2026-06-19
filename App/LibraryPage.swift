@@ -52,20 +52,20 @@ struct LibraryPage: View {
                             }
                         }
                     #elseif os(iOS)
-                    DestinationLink(transition: .zoom) {
-                        MemoryPage(memory)
-                    } label: {
-                        MemoryItemView(memory)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
-                    }
-                    .buttonStyle(.plain)
-                    .swipeActions {
-                        Button("Delete", systemImage: "trash", role: .destructive) {
-                            $memories.remove(memory)
+                        DestinationLink(transition: .zoom) {
+                            MemoryPage(memory)
+                        } label: {
+                            MemoryItemView(memory)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
                         }
-                    }
+                        .buttonStyle(.plain)
+                        .swipeActions {
+                            Button("Delete", systemImage: "trash", role: .destructive) {
+                                $memories.remove(memory)
+                            }
+                        }
                     #endif
                 }
             }
@@ -84,7 +84,7 @@ struct LibraryPage: View {
 }
 
 struct MemoryItemView: View {
-    @Environment(\.rlamusClient) var rlamusClient
+    @Environment(\.getRlamusClient) var getRlamusClient
     @Environment(\.errorHandler) var errorHandler
     @Environment(\.realm) var realm
     @Environment(\.scenePhase) var scenePhase
@@ -127,7 +127,7 @@ struct MemoryItemView: View {
                         summary
                     }
                 }())
-                .disabled(true)
+                    .disabled(true)
             }
             if let errorMessage {
                 Text(errorMessage)
@@ -149,9 +149,7 @@ struct MemoryItemView: View {
             }
 
             do {
-                guard let client = rlamusClient.wrappedValue else {
-                    return
-                }
+                let client = await getRlamusClient()
                 for try await state in item.streamTaskState(client: client) {
                     switch state {
                     case .`init`:
@@ -175,6 +173,12 @@ struct MemoryItemView: View {
                         }
                         progress = 3
                         isLoading = false
+                        do {
+                            // delete from server for privacy
+                            try await client.deleteTask(id: item.taskID)
+                        } catch {
+                            appLogger.info("failed to delete after pull", error: error, metadata: ["taskID": .string(item.taskID.uuidString)])
+                        }
                         break
                     case let .failed(reason):
                         progress = 3

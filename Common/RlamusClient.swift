@@ -115,7 +115,7 @@ public struct RlamusClient: Sendable {
         }
     }
 
-    func deleteTask(id: UUID) async throws (DeleteTaskError) {
+    public func deleteTask(id: UUID) async throws (DeleteTaskError) {
         let request = HTTPRequest(method: .delete, url: endpoint.appending(components: "task", id.uuidString))
         let (_, res): (Data, HTTPResponse)
         do {
