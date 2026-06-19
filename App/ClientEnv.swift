@@ -3,5 +3,5 @@ import Foundation
 import SwiftUI
 
 extension EnvironmentValues {
-    @Entry var getRlamusClient: () async -> RlamusClient = { fatalError() }
+    @Entry var getRlamusClient: () async throws(CancellationError) -> RlamusClient = { fatalError() }
 }

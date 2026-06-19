@@ -23,11 +23,20 @@ import WebKit
                         errorHandler.current = nil
                     }
                 }
-                .sheet(isPresented: $showWebPreview) {
+                .sheet(isPresented: $showWebPreview, onDismiss: {
+                    showSetupSheet = false
+                }) {
                     NavigationStack {
                         WebPreviewPage(webPage: $webPreviewPage) { @MainActor url, title in
+                            let client: RlamusClient
+                            do throws(CancellationError) {
+                                client = try await getRlamusClient()
+                            } catch {
+                                return
+                            }
+                            
                             let response = await errorHandler.runCatching { @MainActor in
-                                let item = try await addMemory(url: url, client: await getRlamusClient())
+                                let item = try await addMemory(url: url, client: client)
                                 item.title = title.isEmpty ? nil : title
                                 try realm.write {
                                     realm.add(item)
@@ -46,13 +55,14 @@ import WebKit
                                 }
                             }
                         }
-                        .navigationDestination(isPresented: $showSetupSheet) {
+                        .sheet(isPresented: $showSetupSheet) {
+                            setupRlamus.finish()
+                        } content: {
                             SetupPage { client in
                                 Task {
                                     await setupRlamus.send(client)
                                 }
                             }
-                            .navigationBarBackButtonHidden()
                         }
                     }
                 }
@@ -111,17 +121,18 @@ import WebKit
         .environment(\.realm, realm)
     }
 
-    func getRlamusClient() async -> RlamusClient {
+    func getRlamusClient() async throws(CancellationError) -> RlamusClient {
         if let rlamusClient {
             return rlamusClient
         }
+        setupRlamus = AsyncChannel()
         showSetupSheet = true
         for await client in setupRlamus {
             showSetupSheet = false
             rlamusClient = client
             return client
         }
-        fatalError("Setup Rlamus channel closed without doing anything")
+        throw CancellationError()
     }
 }
 

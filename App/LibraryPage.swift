@@ -149,7 +149,13 @@ struct MemoryItemView: View {
             }
 
             do {
-                let client = await getRlamusClient()
+                let client: RlamusClient
+                do throws(CancellationError) {
+                    client = try await getRlamusClient()
+                } catch {
+                    return
+                }
+                
                 for try await state in item.streamTaskState(client: client) {
                     switch state {
                     case .`init`:
