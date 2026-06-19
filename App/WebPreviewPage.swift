@@ -63,6 +63,11 @@ struct WebPreviewPage: View {
             VStack(spacing: 8) {
                 Button("Use", systemImage: "camera.viewfinder") {
                     activeActionTask = Task { @MainActor in
+                        var countdown = 10
+                        while webPage.title.isEmpty && countdown > 0 {
+                            try? await Task.sleep(for: .milliseconds(500))
+                            countdown -= 1
+                        }
                         await action(webPage.url!, webPage.title)
                         activeActionTask = nil
                     }

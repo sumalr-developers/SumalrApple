@@ -1,13 +1,11 @@
+import AsyncAlgorithms
 import Common
 import RealmSwift
 import SwiftUI
 import WebKit
 
 @main struct SumalrApp: App {
-    @Environment(\.realm) var realm
-
-    @State var showWebPreview = false
-    @State var webPreviewPage = WebPage()
+    @State var realm = try! Realm(configuration: realmConfig)
     @State var rlamusClient: RlamusClient? = {
         guard let setUrl = UserDefaults.standard.string(forKey: "rlamusURL"),
               let endpoint = URL(string: setUrl) else {
@@ -16,14 +14,16 @@ import WebKit
         return RlamusClient(endpoint: endpoint)
     }()
 
+    @State var showWebPreview = false
+    @State var webPreviewPage = WebPage()
     @State var errorHandler = ErrorHandler()
+
+    @State var setupRlamus = AsyncChannel<RlamusClient>()
+    @State var showSetupSheet = false
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.showWebPreview, $showWebPreview)
-                .environment(\.rlamusClient, $rlamusClient)
-                .environment(\.errorHandler, errorHandler)
                 .alert(error: $errorHandler.current) {
                     Button(role: .cancel) {
                         errorHandler.current = nil
@@ -33,8 +33,8 @@ import WebKit
                     NavigationStack {
                         WebPreviewPage(webPage: $webPreviewPage) { @MainActor url, title in
                             let response = await errorHandler.runCatching { @MainActor in
-                                let item = try await addMemory(url: url, client: rlamusClient!)
-                                item.title = title
+                                let item = try await addMemory(url: url, client: await getRlamusClient())
+                                item.title = title.isEmpty ? nil : title
                                 try realm.write {
                                     realm.add(item)
                                 }
@@ -54,8 +54,20 @@ import WebKit
                         }
                     }
                 }
+                .sheet(isPresented: $showSetupSheet, onDismiss: { /* noop */ }) {
+                    SetupPage { client in
+                        Task {
+                            await setupRlamus.send(client)
+                        }
+                    }
+                }
         }
-        .onChange(of: rlamusClient?.endpoint, { oldValue, newValue in
+        .environment(\.showWebPreview, $showWebPreview)
+        .environment(\.rlamusClient, $rlamusClient)
+        .environment(\.errorHandler, errorHandler)
+        .environment(\.getRlamusClient, getRlamusClient)
+        .environment(\.realm, realm)
+        .onChange(of: rlamusClient?.endpoint, { _, newValue in
             UserDefaults.standard.setValue(newValue?.absoluteString, forKey: "rlamusURL")
         })
         .commands {
@@ -66,6 +78,41 @@ import WebKit
                 .keyboardShortcut("N")
             }
         }
+
+        WindowGroup(id: "memory", for: OpenMemory.self) { $openMemory in
+            Group {
+                if let openMemory,
+                   let memory = realm.object(ofType: MemoryItem.self, forPrimaryKey: openMemory.pk) {
+                    MemoryPage(memory)
+                } else {
+                    MemoryPage()
+                }
+            }
+            .sheet(isPresented: $showSetupSheet, onDismiss: { /* noop */ }) {
+                SetupPage { client in
+                    Task {
+                        await setupRlamus.send(client)
+                    }
+                }
+            }
+        }
+        .environment(\.showWebPreview, $showWebPreview)
+        .environment(\.rlamusClient, $rlamusClient)
+        .environment(\.errorHandler, errorHandler)
+        .environment(\.getRlamusClient, getRlamusClient)
+        .environment(\.realm, realm)
+    }
+
+    func getRlamusClient() async -> RlamusClient {
+        if let rlamusClient {
+            return rlamusClient
+        }
+        showSetupSheet = true
+        for await client in setupRlamus {
+            rlamusClient = client
+            return client
+        }
+        fatalError("Setup Rlamus channel closed without doing anything")
     }
 }
 

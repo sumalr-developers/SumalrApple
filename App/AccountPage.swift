@@ -4,13 +4,21 @@ import SwiftUI
 internal import HTTPTypes
 
 struct AccountPage: View {
-    @Environment(\.rlamusClient) var rlamusClient
-
-    @State var endpointBuffer = ""
-    @State var verifyState: BackendVerifyState = .pending
-
     var body: some View {
         Form {
+            BackendSection()
+        }
+        .formStyle(.grouped)
+        .padding()
+    }
+    
+    struct BackendSection: View {
+        @Environment(\.rlamusClient) var rlamusClient
+
+        @State var endpointBuffer = ""
+        @State var verifyState: BackendVerifyState = .pending
+
+        var body: some View {
             Section("Backend") {
                 TextField("Rlamus server URL", text: $endpointBuffer)
                     .submitLabel(.done)
@@ -39,8 +47,6 @@ struct AccountPage: View {
                     }
             }
         }
-        .formStyle(.grouped)
-        .padding()
     }
 }
 

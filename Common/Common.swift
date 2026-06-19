@@ -10,7 +10,7 @@ import Realm
 import RealmSwift
 
 public func addMemory(url: URL, client: RlamusClient) async throws (CreateTaskError) -> MemoryItem {
-    let item = MemoryItem()
+    let item = MemoryItem(id: ObjectId())
     item.url = url.absoluteString
     item.creation = .now
     item.taskID = try await client.createTask(url: url.absoluteString)

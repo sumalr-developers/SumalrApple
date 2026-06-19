@@ -5,6 +5,7 @@ import Realm
 import RealmSwift
 import SwiftUI
 import Textual
+import Transmission
 import WebKit
 
 struct LibraryPage: View {
@@ -13,6 +14,9 @@ struct LibraryPage: View {
     @Environment(\.realm) var realm
     @Environment(\.horizontalSizeClass) var windowSize
     @Environment(\.showWebPreview) var showWebPreview
+    #if os(macOS)
+        @Environment(\.openWindow) var openWindow
+    #endif
 
     @ObservedResults(MemoryItem.self) var memories
 
@@ -33,14 +37,36 @@ struct LibraryPage: View {
         ScrollView(.vertical) {
             LazyVGrid(columns: columns) {
                 ForEach(memories) { memory in
-                    MemoryItemView(memory)
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
+                    #if os(macOS)
+                        Button {
+                            openWindow(value: OpenMemory(memory))
+                        } label: {
+                            MemoryItemView(memory)
+                                .padding()
+                                .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
+                        }
+                        .buttonStyle(.plain)
                         .swipeActions {
                             Button("Delete", systemImage: "trash", role: .destructive) {
                                 $memories.remove(memory)
                             }
                         }
+                    #elseif os(iOS)
+                    DestinationLink(transition: .zoom) {
+                        MemoryPage(memory)
+                    } label: {
+                        MemoryItemView(memory)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
+                    }
+                    .buttonStyle(.plain)
+                    .swipeActions {
+                        Button("Delete", systemImage: "trash", role: .destructive) {
+                            $memories.remove(memory)
+                        }
+                    }
+                    #endif
                 }
             }
             .animation(.default, value: memories)
@@ -101,7 +127,7 @@ struct MemoryItemView: View {
                         summary
                     }
                 }())
-                    .textual.textSelection(.enabled)
+                .disabled(true)
             }
             if let errorMessage {
                 Text(errorMessage)
@@ -180,10 +206,10 @@ struct MemoryItemView: View {
             return r
         }())
             .padding()
-        
+
         MemoryItemView({
             let r = MemoryItem()
-            r.summary = Array.init(repeating: "Example domain is for demostration purpose only and shouldn't be used in production.", count: 50).joined(separator: "\n")
+            r.summary = Array(repeating: "Example domain is for demostration purpose only and shouldn't be used in production.", count: 50).joined(separator: "\n")
             r.title = "Some page"
             r.url = "https://example.com"
             return r

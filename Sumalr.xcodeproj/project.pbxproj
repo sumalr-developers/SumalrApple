@@ -17,6 +17,8 @@
 		6A4523D02FE398B000EA5AD2 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523CF2FE398B000EA5AD2 /* Algorithms */; };
 		6A4523D22FE3A41900EA5AD2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523D12FE3A41900EA5AD2 /* RealmSwift */; };
 		6A4523D32FE3A41900EA5AD2 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523D12FE3A41900EA5AD2 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		6A566DA72FE52E5800378452 /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DA62FE52E5800378452 /* Transmission */; };
+		6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DB72FE54F0C00378452 /* AsyncAlgorithms */; };
 		6A6432652FE44CED00D2368A /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432642FE44CED00D2368A /* Logging */; };
 		6A64326A2FE4547300D2368A /* Textual in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432692FE4547300D2368A /* Textual */; };
 		6A695FE32FE2356700DB08E0 /* macOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FD72FE2356600DB08E0 /* macOSShare.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -199,7 +201,9 @@
 				6A956D822FE2F81600834288 /* RealmSwift in Frameworks */,
 				6AF0C6C92FE23C1600B2E764 /* Common.framework in Frameworks */,
 				6A87CCCE2FE406C6004F5719 /* SwiftUIIntrospect in Frameworks */,
+				6A566DA72FE52E5800378452 /* Transmission in Frameworks */,
 				6A6432652FE44CED00D2368A /* Logging in Frameworks */,
+				6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */,
 			);
 		};
 		6A695FD42FE2356600DB08E0 /* Frameworks */ = {
@@ -302,6 +306,8 @@
 				6A87CCCD2FE406C6004F5719 /* SwiftUIIntrospect */,
 				6A6432642FE44CED00D2368A /* Logging */,
 				6A6432692FE4547300D2368A /* Textual */,
+				6A566DA62FE52E5800378452 /* Transmission */,
+				6A566DB72FE54F0C00378452 /* AsyncAlgorithms */,
 			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* Sumalr.app */;
@@ -444,6 +450,8 @@
 				6A87CCCC2FE406C6004F5719 /* XCRemoteSwiftPackageReference "swiftui-introspect" */,
 				6A6432632FE44CED00D2368A /* XCRemoteSwiftPackageReference "swift-log" */,
 				6A6432682FE4547300D2368A /* XCRemoteSwiftPackageReference "textual" */,
+				6A64326F2FE527DE00D2368A /* XCRemoteSwiftPackageReference "Transmission" */,
+				6A566DB62FE54F0C00378452 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -622,6 +630,7 @@
 				PROJECT_UNIQUE_VALUE = YW0FOS7E;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 				XROS_DEPLOYMENT_TARGET = 27.0;
@@ -685,6 +694,7 @@
 				PROJECT_UNIQUE_VALUE = YW0FOS7E;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 				XROS_DEPLOYMENT_TARGET = 27.0;
 			};
@@ -1133,6 +1143,14 @@
 			traits = (
 			);
 		};
+		6A566DB62FE54F0C00378452 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.4;
+			};
+		};
 		6A6432632FE44CED00D2368A /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-log";
@@ -1147,6 +1165,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.5.0;
+			};
+		};
+		6A64326F2FE527DE00D2368A /* XCRemoteSwiftPackageReference "Transmission" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nathantannar4/Transmission";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.12.1;
 			};
 		};
 		6A87CCCC2FE406C6004F5719 /* XCRemoteSwiftPackageReference "swiftui-introspect" */ = {
@@ -1208,6 +1234,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6AA9963D2FE2E3BA008625C7 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		6A566DA62FE52E5800378452 /* Transmission */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A64326F2FE527DE00D2368A /* XCRemoteSwiftPackageReference "Transmission" */;
+			productName = Transmission;
+		};
+		6A566DB72FE54F0C00378452 /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A566DB62FE54F0C00378452 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
 		};
 		6A6432642FE44CED00D2368A /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;

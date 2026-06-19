@@ -1,0 +1,87 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Account" : {
+
+    },
+    "Add" : {
+
+    },
+    "Backend" : {
+
+    },
+    "Close" : {
+
+    },
+    "Continue" : {
+
+    },
+    "Could not parse the address of your input" : {
+
+    },
+    "Could not parse the URL" : {
+
+    },
+    "Created %@ ago" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Enter website address" : {
+
+    },
+    "Invalid address" : {
+
+    },
+    "Invalid backend (compatibility version %lld)" : {
+
+    },
+    "Invalid backend (invalid signature)" : {
+
+    },
+    "Invalid response. Got status %lld." : {
+
+    },
+    "Item not found" : {
+
+    },
+    "Library" : {
+
+    },
+    "Network error. %@" : {
+
+    },
+    "New from URL" : {
+
+    },
+    "Paused for input sattle" : {
+
+    },
+    "Rlamus server URL" : {
+
+    },
+    "Sumalr" : {
+
+    },
+    "The URL is not supported" : {
+
+    },
+    "Unnamed memory" : {
+
+    },
+    "URL" : {
+
+    },
+    "Use" : {
+
+    },
+    "Valid backend" : {
+
+    },
+    "Verifying backend..." : {
+
+    }
+  },
+  "version" : "1.3"
+}
