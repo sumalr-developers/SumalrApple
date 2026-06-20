@@ -15,19 +15,13 @@
 		6A3065D12FE2D11500C9BE5A /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6A3065D22FE2D11500C9BE5A /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A4523D02FE398B000EA5AD2 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523CF2FE398B000EA5AD2 /* Algorithms */; };
-		6A4523D22FE3A41900EA5AD2 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523D12FE3A41900EA5AD2 /* RealmSwift */; };
-		6A4523D32FE3A41900EA5AD2 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523D12FE3A41900EA5AD2 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A566DA72FE52E5800378452 /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DA62FE52E5800378452 /* Transmission */; };
 		6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DB72FE54F0C00378452 /* AsyncAlgorithms */; };
-		6A566DC32FE579E100378452 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DC22FE579E100378452 /* RealmSwift */; };
-		6A566DC42FE579E100378452 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DC22FE579E100378452 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6A6432652FE44CED00D2368A /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432642FE44CED00D2368A /* Logging */; };
 		6A64326A2FE4547300D2368A /* Textual in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432692FE4547300D2368A /* Textual */; };
 		6A695FE32FE2356700DB08E0 /* macOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FD72FE2356600DB08E0 /* macOSShare.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A695FF62FE235B800DB08E0 /* iOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FEC2FE235B800DB08E0 /* iOSShare.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A87CCCE2FE406C6004F5719 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 6A87CCCD2FE406C6004F5719 /* SwiftUIIntrospect */; };
-		6A956D822FE2F81600834288 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6A956D812FE2F81600834288 /* RealmSwift */; };
-		6A956D832FE2F81600834288 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 6A956D812FE2F81600834288 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6AF0C6BF2FE23C1600B2E764 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6AF0C6C92FE23C1600B2E764 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6AF0C6CA2FE23C1600B2E764 /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -91,7 +85,6 @@
 			dstPath = "";
 			dstSubfolder = Frameworks;
 			files = (
-				6A566DC42FE579E100378452 /* RealmSwift in Embed Frameworks */,
 				6A3065CD2FE2D10F00C9BE5A /* Common.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -110,7 +103,6 @@
 			dstPath = "";
 			dstSubfolder = Frameworks;
 			files = (
-				6A4523D32FE3A41900EA5AD2 /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 		};
@@ -129,7 +121,6 @@
 			dstPath = "";
 			dstSubfolder = Frameworks;
 			files = (
-				6A956D832FE2F81600834288 /* RealmSwift in Embed Frameworks */,
 				6AF0C6CA2FE23C1600B2E764 /* Common.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -139,6 +130,7 @@
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* Sumalr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sumalr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A566DC52FE57A4700378452 /* Sumalr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sumalr.entitlements; sourceTree = "<group>"; };
+		6A66D88D2FE63A47009AEDF9 /* Sumalr-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sumalr-Info.plist"; sourceTree = "<group>"; };
 		6A695FD72FE2356600DB08E0 /* macOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = macOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A695FEC2FE235B800DB08E0 /* iOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF0C6B42FE23C1500B2E764 /* Common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -202,7 +194,6 @@
 			files = (
 				6A64326A2FE4547300D2368A /* Textual in Frameworks */,
 				6A4523D02FE398B000EA5AD2 /* Algorithms in Frameworks */,
-				6A956D822FE2F81600834288 /* RealmSwift in Frameworks */,
 				6AF0C6C92FE23C1600B2E764 /* Common.framework in Frameworks */,
 				6A87CCCE2FE406C6004F5719 /* SwiftUIIntrospect in Frameworks */,
 				6A566DA72FE52E5800378452 /* Transmission in Frameworks */,
@@ -219,14 +210,12 @@
 		6A695FE92FE235B800DB08E0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				6A566DC32FE579E100378452 /* RealmSwift in Frameworks */,
 				6A3065CC2FE2D10F00C9BE5A /* Common.framework in Frameworks */,
 			);
 		};
 		6AF0C6B12FE23C1500B2E764 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				6A4523D22FE3A41900EA5AD2 /* RealmSwift in Frameworks */,
 				6A159AF12FE27CBD0079C59B /* HTTPTypes in Frameworks */,
 				6A159AF92FE2A6760079C59B /* EventSource in Frameworks */,
 				6A159AF32FE284810079C59B /* HTTPTypesFoundation in Frameworks */,
@@ -244,7 +233,6 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
-				6A566DC52FE57A4700378452 /* Sumalr.entitlements */,
 				000000000000000000000010 /* App */,
 				6A695FD82FE2356600DB08E0 /* macOSShare */,
 				6A695FED2FE235B800DB08E0 /* iOSShare */,
@@ -252,6 +240,8 @@
 				6AF0C6C42FE23C1600B2E764 /* CommonTests */,
 				6A159AEF2FE27CBD0079C59B /* Frameworks */,
 				000000000000000000000020 /* Products */,
+				6A566DC52FE57A4700378452 /* Sumalr.entitlements */,
+				6A66D88D2FE63A47009AEDF9 /* Sumalr-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -307,7 +297,6 @@
 			);
 			name = Sumalr;
 			packageProductDependencies = (
-				6A956D812FE2F81600834288 /* RealmSwift */,
 				6A4523CF2FE398B000EA5AD2 /* Algorithms */,
 				6A87CCCD2FE406C6004F5719 /* SwiftUIIntrospect */,
 				6A6432642FE44CED00D2368A /* Logging */,
@@ -359,9 +348,6 @@
 				6A695FED2FE235B800DB08E0 /* iOSShare */,
 			);
 			name = iOSShare;
-			packageProductDependencies = (
-				6A566DC22FE579E100378452 /* RealmSwift */,
-			);
 			productName = iOSShare;
 			productReference = 6A695FEC2FE235B800DB08E0 /* iOSShare.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -386,7 +372,6 @@
 				6A159AF02FE27CBD0079C59B /* HTTPTypes */,
 				6A159AF22FE284810079C59B /* HTTPTypesFoundation */,
 				6A159AF82FE2A6760079C59B /* EventSource */,
-				6A4523D12FE3A41900EA5AD2 /* RealmSwift */,
 			);
 			productName = Common;
 			productReference = 6AF0C6B42FE23C1500B2E764 /* Common.framework */;
@@ -454,7 +439,6 @@
 			packageReferences = (
 				6AF0C6DB2FE27BE600B2E764 /* XCRemoteSwiftPackageReference "swift-http-types" */,
 				6A159AF72FE2A6760079C59B /* XCRemoteSwiftPackageReference "EventSource" */,
-				6AA9963D2FE2E3BA008625C7 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				6A956D872FE2FE1600834288 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				6A87CCCC2FE406C6004F5719 /* XCRemoteSwiftPackageReference "swiftui-introspect" */,
 				6A6432632FE44CED00D2368A /* XCRemoteSwiftPackageReference "swift-log" */,
@@ -732,6 +716,7 @@
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Sumalr-Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -782,6 +767,7 @@
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Sumalr-Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1208,14 +1194,6 @@
 				minimumVersion = 1.2.1;
 			};
 		};
-		6AA9963D2FE2E3BA008625C7 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift.git";
-			requirement = {
-				branch = community;
-				kind = branch;
-			};
-		};
 		6AF0C6DB2FE27BE600B2E764 /* XCRemoteSwiftPackageReference "swift-http-types" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-http-types.git";
@@ -1247,11 +1225,6 @@
 			package = 6A956D872FE2FE1600834288 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
 		};
-		6A4523D12FE3A41900EA5AD2 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA9963D2FE2E3BA008625C7 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
-		};
 		6A566DA62FE52E5800378452 /* Transmission */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6A64326F2FE527DE00D2368A /* XCRemoteSwiftPackageReference "Transmission" */;
@@ -1261,11 +1234,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A566DB62FE54F0C00378452 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
 			productName = AsyncAlgorithms;
-		};
-		6A566DC22FE579E100378452 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA9963D2FE2E3BA008625C7 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
 		};
 		6A6432642FE44CED00D2368A /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1281,11 +1249,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A87CCCC2FE406C6004F5719 /* XCRemoteSwiftPackageReference "swiftui-introspect" */;
 			productName = SwiftUIIntrospect;
-		};
-		6A956D812FE2F81600834288 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA9963D2FE2E3BA008625C7 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

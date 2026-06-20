@@ -1,9 +1,10 @@
 import Foundation
-import RealmSwift
 import SwiftUI
+import SwiftData
 
 public struct ShareSheetView: View {
     @Environment(\.dismissSharesheet) var dismiss
+    @Environment(\.modelContext) var modelContext
 
     @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
     @State var showSetupPage = false
@@ -44,7 +45,6 @@ public struct ShareSheetView: View {
                     return
                 }
 
-                let realm = try! await Realm(configuration: realmConfig)
                 do {
                     for item in sharedItems {
                         let url = try await item.loadObject(ofType: URL.self)
@@ -52,9 +52,8 @@ public struct ShareSheetView: View {
                         if let title = try? await getWebPageTitle(url: url) {
                             item.title = title
                         }
-                        try realm.write {
-                            realm.add(item)
-                        }
+                        modelContext.insert(item)
+                        try modelContext.save()
                         completedCount += 1
                     }
                     state = .completed

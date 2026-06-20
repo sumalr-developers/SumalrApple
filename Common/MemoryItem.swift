@@ -1,18 +1,18 @@
 import Foundation
-import Realm
-import RealmSwift
+import SwiftData
 
-public class MemoryItem: Object, ObjectKeyIdentifiable {
-    @Persisted(primaryKey: true) public var _id: ObjectId = ObjectId.generate()
-    @Persisted public var url: String
-    @Persisted public var title: String?
-    @Persisted public var summary: String?
-    @Persisted public var taskID: UUID
-    @Persisted public var creation: Date
-
-    public convenience init(id: ObjectId) {
-        self.init()
-        _id = id
+@Model
+public final class MemoryItem {
+    public var url: String = ""
+    @Attribute(.spotlight) public var title: String?
+    @Attribute(.spotlight) public var summary: String?
+    public var taskID: UUID = UUID()
+    public var creation: Date = Date.distantFuture
+    
+    public init(url: String, taskID: UUID) {
+        self.url = url
+        self.taskID = taskID
+        self.creation = .now
     }
 
     public func streamTaskState(client: RlamusClient) -> some AsyncSequence<RlamusTaskState, Error> {

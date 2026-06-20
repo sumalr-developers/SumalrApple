@@ -1,8 +1,7 @@
 import Common
 import Foundation
 import Logging
-import Realm
-import RealmSwift
+import SwiftData
 import SwiftUI
 import Textual
 import Transmission
@@ -11,14 +10,14 @@ import WebKit
 struct LibraryPage: View {
     @Environment(\.errorHandler) var errorHandler
     @Environment(\.rlamusClient) var rlamusClient
-    @Environment(\.realm) var realm
+    @Environment(\.modelContext) var modelContext
     @Environment(\.horizontalSizeClass) var windowSize
     @Environment(\.showWebPreview) var showWebPreview
     #if os(macOS)
         @Environment(\.openWindow) var openWindow
     #endif
 
-    @ObservedResults(MemoryItem.self) var memories
+    @Query var memories: [MemoryItem]
 
     var columns: [GridItem] {
         let columns: Int
@@ -48,7 +47,7 @@ struct LibraryPage: View {
                         .buttonStyle(.plain)
                         .swipeActions {
                             Button("Delete", systemImage: "trash", role: .destructive) {
-                                $memories.remove(memory)
+                                modelContext.delete(memory)
                             }
                         }
                     #elseif os(iOS)
@@ -63,7 +62,7 @@ struct LibraryPage: View {
                         .buttonStyle(.plain)
                         .swipeActions {
                             Button("Delete", systemImage: "trash", role: .destructive) {
-                                $memories.remove(memory)
+                                modelContext.delete(memory)
                             }
                         }
                     #endif
@@ -86,8 +85,8 @@ struct LibraryPage: View {
 struct MemoryItemView: View {
     @Environment(\.getRlamusClient) var getRlamusClient
     @Environment(\.errorHandler) var errorHandler
-    @Environment(\.realm) var realm
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.modelContext) var modelContext
 
     let item: MemoryItem
     @State var isLoading: Bool
@@ -103,7 +102,7 @@ struct MemoryItemView: View {
 
     private struct ItemIDScenePhaseTuple: Equatable {
         let scene: ScenePhase
-        let itemId: UInt64
+        let itemId: PersistentIdentifier
     }
 
     var body: some View {
@@ -143,40 +142,32 @@ struct MemoryItemView: View {
                 }
             }
         }
-        .task(id: ItemIDScenePhaseTuple(scene: scenePhase, itemId: item.id)) {
+        .task(id: ItemIDScenePhaseTuple(scene: scenePhase, itemId: item.persistentModelID)) {
             if item.summary != nil || scenePhase != .active {
                 return
             }
 
             do {
                 let client: RlamusClient
-                do throws(CancellationError) {
+                do throws (CancellationError) {
                     client = try await getRlamusClient()
                 } catch {
                     return
                 }
-                
+
                 for try await state in item.streamTaskState(client: client) {
                     switch state {
                     case .`init`:
-                        guard let thawed = item.thaw() else {
-                            break
-                        }
-                        try? realm.write {
-                            thawed.summary = nil
-                        }
+                        item.summary = nil
+                        try? modelContext.save()
                         progress = 0
                     case .scraping:
                         progress = 1
                     case .summarizing:
                         progress = 2
                     case let .done(summary):
-                        guard let thawed = item.thaw() else {
-                            break
-                        }
-                        try? realm.write {
-                            thawed.summary = summary
-                        }
+                        item.summary = summary
+                        try? modelContext.save()
                         progress = 3
                         isLoading = false
                         do {
@@ -209,19 +200,17 @@ struct MemoryItemView: View {
 #Preview {
     VStack {
         MemoryItemView({
-            let r = MemoryItem()
+            let r = MemoryItem(url: "https://example.com", taskID: UUID())
             r.summary = "Example domain is for demostration purpose only and shouldn't be used in production."
             r.title = "Some page"
-            r.url = "https://example.com"
             return r
         }())
             .padding()
 
         MemoryItemView({
-            let r = MemoryItem()
+            let r = MemoryItem(url: "https://example.com", taskID: UUID())
             r.summary = Array(repeating: "Example domain is for demostration purpose only and shouldn't be used in production.", count: 50).joined(separator: "\n")
             r.title = "Some page"
-            r.url = "https://example.com"
             return r
         }())
             .padding()

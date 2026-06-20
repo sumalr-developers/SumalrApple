@@ -1,11 +1,11 @@
 import Foundation
 import Common
-import RealmSwift
+import SwiftData
 
 struct OpenMemory: Encodable, Decodable, Hashable {
-    let pk: ObjectId
+    let pk: PersistentIdentifier
     
     init(_ memory: MemoryItem) {
-        self.pk = memory._id
+        self.pk = memory.id
     }
 }
