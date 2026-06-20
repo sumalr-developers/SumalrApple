@@ -1,7 +1,9 @@
+import AppIntents
 import AsyncAlgorithms
 import Common
 import CoreData
 import Foundation
+import Logging
 import SwiftData
 import SwiftUI
 import WebKit
@@ -15,6 +17,7 @@ import WebKit
     var body: some Scene {
         Group {
             MainScene(showSetupSheet: $showSetupSheet, setupRlamus: setupRlamus)
+                .handlesExternalEvents(matching: ["*"])
             MemoryScene(showSetupSheet: $showSetupSheet, setupRlamus: setupRlamus)
         }
         .environment(\.showWebPreview, $showWebPreview)

@@ -1,0 +1,11 @@
+//
+//  AppIdentifiers.xcconfig
+//  Sumalr
+//
+//  Created by Caturday Reed on 2026/6/20.
+//
+
+DEEP_LINK_SCHEME = sumalr
+APP_GROUP_ID = group.zhufucdev.sumalr
+APP_CODENAME = com.zhufucdev.sumalr
+ICLOUD_CONTAINER_ID = iCloud.zhufucdev.Sumalr

@@ -1,4 +1,4 @@
-import Foundation
+import Common
 import Logging
 
-let appLogger = Logger(label: "com.zhufucdev.Sumalr")
+let appLogger = Logger(label: APP_CODENAME)

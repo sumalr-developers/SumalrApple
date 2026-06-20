@@ -7,8 +7,6 @@
 
 import Foundation
 
-let APP_GROUP_ID = "group.zhufucdev.sumalr"
-
 public func addMemory(url: URL, client: RlamusClient) async throws (CreateTaskError) -> MemoryItem {
     let taskID = try await client.createTask(url: url.absoluteString)
     let item = MemoryItem(url: url.absoluteString, taskID: taskID)

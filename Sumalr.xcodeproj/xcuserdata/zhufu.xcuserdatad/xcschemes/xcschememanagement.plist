@@ -16,6 +16,11 @@
 			<key>orderHint</key>
 			<integer>5</integer>
 		</dict>
+		<key>MemoryIndexExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
 		<key>MyApp.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -50,6 +55,11 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>000000000000000100000000</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6A66DA7A2FE694EB009AEDF9</key>
 		<dict>
 			<key>primary</key>
 			<true/>

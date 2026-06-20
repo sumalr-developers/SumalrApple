@@ -11,7 +11,6 @@
 		6A159AF32FE284810079C59B /* HTTPTypesFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A159AF22FE284810079C59B /* HTTPTypesFoundation */; };
 		6A159AF92FE2A6760079C59B /* EventSource in Frameworks */ = {isa = PBXBuildFile; productRef = 6A159AF82FE2A6760079C59B /* EventSource */; };
 		6A3065CC2FE2D10F00C9BE5A /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
-		6A3065CD2FE2D10F00C9BE5A /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A3065D12FE2D11500C9BE5A /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6A3065D22FE2D11500C9BE5A /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A4523D02FE398B000EA5AD2 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523CF2FE398B000EA5AD2 /* Algorithms */; };
@@ -19,6 +18,7 @@
 		6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DB72FE54F0C00378452 /* AsyncAlgorithms */; };
 		6A6432652FE44CED00D2368A /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432642FE44CED00D2368A /* Logging */; };
 		6A64326A2FE4547300D2368A /* Textual in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432692FE4547300D2368A /* Textual */; };
+		6A66DA8D2FE69D41009AEDF9 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6A695FE32FE2356700DB08E0 /* macOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FD72FE2356600DB08E0 /* macOSShare.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A695FF62FE235B800DB08E0 /* iOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FEC2FE235B800DB08E0 /* iOSShare.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A87CCCE2FE406C6004F5719 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 6A87CCCD2FE406C6004F5719 /* SwiftUIIntrospect */; };
@@ -36,6 +36,13 @@
 			remoteInfo = Common;
 		};
 		6A3065D32FE2D11500C9BE5A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6AF0C6B32FE23C1500B2E764;
+			remoteInfo = Common;
+		};
+		6A66DA8F2FE69D41009AEDF9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 000000000000000000000000 /* Project object */;
 			proxyType = 1;
@@ -80,15 +87,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6A3065D02FE2D10F00C9BE5A /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			dstPath = "";
-			dstSubfolder = Frameworks;
-			files = (
-				6A3065CD2FE2D10F00C9BE5A /* Common.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-		};
 		6A3065D52FE2D11500C9BE5A /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			dstPath = "";
@@ -131,6 +129,8 @@
 		000000000000000000000120 /* Sumalr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sumalr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A566DC52FE57A4700378452 /* Sumalr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sumalr.entitlements; sourceTree = "<group>"; };
 		6A66D88D2FE63A47009AEDF9 /* Sumalr-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sumalr-Info.plist"; sourceTree = "<group>"; };
+		6A66DA5F2FE671F3009AEDF9 /* AppIdentifiers.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppIdentifiers.xcconfig; sourceTree = "<group>"; };
+		6A66DA7B2FE694EB009AEDF9 /* MemoryIndexExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; name = MemoryIndexExtension.appex; path = "/Users/zhufu/Source/Swift/Sumalr/build/Debug-iphoneos/MemoryIndexExtension.appex"; sourceTree = "<absolute>"; };
 		6A695FD72FE2356600DB08E0 /* macOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = macOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A695FEC2FE235B800DB08E0 /* iOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF0C6B42FE23C1500B2E764 /* Common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +138,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6A66DA652FE6853F009AEDF9 /* Exceptions for "Common" folder in "Common" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6AF0C6B32FE23C1500B2E764 /* Common */;
+		};
+		6A66DA832FE694EB009AEDF9 /* Exceptions for "MemoryIndexExtension" folder in "MemoryIndexExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6A66DA7A2FE694EB009AEDF9 /* MemoryIndexExtension */;
+		};
 		6A695FE42FE2356700DB08E0 /* Exceptions for "macOSShare" folder in "macOSShare" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -160,6 +174,14 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		6A66DA7C2FE694EB009AEDF9 /* MemoryIndexExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6A66DA832FE694EB009AEDF9 /* Exceptions for "MemoryIndexExtension" folder in "MemoryIndexExtension" target */,
+			);
+			path = MemoryIndexExtension;
+			sourceTree = "<group>";
+		};
 		6A695FD82FE2356600DB08E0 /* macOSShare */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -178,6 +200,9 @@
 		};
 		6AF0C6B52FE23C1500B2E764 /* Common */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6A66DA652FE6853F009AEDF9 /* Exceptions for "Common" folder in "Common" target */,
+			);
 			path = Common;
 			sourceTree = "<group>";
 		};
@@ -199,6 +224,12 @@
 				6A566DA72FE52E5800378452 /* Transmission in Frameworks */,
 				6A6432652FE44CED00D2368A /* Logging in Frameworks */,
 				6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */,
+			);
+		};
+		6A66DA782FE694EB009AEDF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				6A66DA8D2FE69D41009AEDF9 /* Common.framework in Frameworks */,
 			);
 		};
 		6A695FD42FE2356600DB08E0 /* Frameworks */ = {
@@ -233,11 +264,13 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				6A66DA5F2FE671F3009AEDF9 /* AppIdentifiers.xcconfig */,
 				000000000000000000000010 /* App */,
 				6A695FD82FE2356600DB08E0 /* macOSShare */,
 				6A695FED2FE235B800DB08E0 /* iOSShare */,
 				6AF0C6B52FE23C1500B2E764 /* Common */,
 				6AF0C6C42FE23C1600B2E764 /* CommonTests */,
+				6A66DA7C2FE694EB009AEDF9 /* MemoryIndexExtension */,
 				6A159AEF2FE27CBD0079C59B /* Frameworks */,
 				000000000000000000000020 /* Products */,
 				6A566DC52FE57A4700378452 /* Sumalr.entitlements */,
@@ -308,6 +341,27 @@
 			productReference = 000000000000000000000120 /* Sumalr.app */;
 			productType = "com.apple.product-type.application";
 		};
+		6A66DA7A2FE694EB009AEDF9 /* MemoryIndexExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6A66DA842FE694EB009AEDF9 /* Build configuration list for PBXNativeTarget "MemoryIndexExtension" */;
+			buildPhases = (
+				6A66DA772FE694EB009AEDF9 /* Sources */,
+				6A66DA782FE694EB009AEDF9 /* Frameworks */,
+				6A66DA792FE694EB009AEDF9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6A66DA902FE69D41009AEDF9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6A66DA7C2FE694EB009AEDF9 /* MemoryIndexExtension */,
+			);
+			name = MemoryIndexExtension;
+			productName = MemoryIndexExtension;
+			productReference = 6A66DA7B2FE694EB009AEDF9 /* MemoryIndexExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		6A695FD62FE2356600DB08E0 /* macOSShare */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6A695FE52FE2356700DB08E0 /* Build configuration list for PBXNativeTarget "macOSShare" */;
@@ -337,7 +391,6 @@
 				6A695FE82FE235B800DB08E0 /* Sources */,
 				6A695FE92FE235B800DB08E0 /* Frameworks */,
 				6A695FEA2FE235B800DB08E0 /* Resources */,
-				6A3065D02FE2D10F00C9BE5A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -412,6 +465,9 @@
 					000000000000000100000000 = {
 						CreatedOnToolsVersion = 26.3;
 					};
+					6A66DA7A2FE694EB009AEDF9 = {
+						CreatedOnToolsVersion = 27.0;
+					};
 					6A695FD62FE2356600DB08E0 = {
 						CreatedOnToolsVersion = 27.0;
 					};
@@ -456,12 +512,18 @@
 				6A695FEB2FE235B800DB08E0 /* iOSShare */,
 				6AF0C6B32FE23C1500B2E764 /* Common */,
 				6AF0C6BD2FE23C1600B2E764 /* CommonTests */,
+				6A66DA7A2FE694EB009AEDF9 /* MemoryIndexExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		000000000000000140000000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		6A66DA792FE694EB009AEDF9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -490,6 +552,11 @@
 
 /* Begin PBXSourcesBuildPhase section */
 		000000000000000120000000 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		6A66DA772FE694EB009AEDF9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
 			);
@@ -527,6 +594,11 @@
 			target = 6AF0C6B32FE23C1500B2E764 /* Common */;
 			targetProxy = 6A3065D32FE2D11500C9BE5A /* PBXContainerItemProxy */;
 		};
+		6A66DA902FE69D41009AEDF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6AF0C6B32FE23C1500B2E764 /* Common */;
+			targetProxy = 6A66DA8F2FE69D41009AEDF9 /* PBXContainerItemProxy */;
+		};
 		6A695FE22FE2356700DB08E0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilters = (
@@ -561,6 +633,7 @@
 /* Begin XCBuildConfiguration section */
 		000000000000000011000000 /* Debug configuration for PBXProject "Sumalr" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6A66DA5F2FE671F3009AEDF9 /* AppIdentifiers.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLETVOS_DEPLOYMENT_TARGET = 27.0;
@@ -633,6 +706,7 @@
 		};
 		000000000000000012000000 /* Release configuration for PBXProject "Sumalr" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6A66DA5F2FE671F3009AEDF9 /* AppIdentifiers.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLETVOS_DEPLOYMENT_TARGET = 27.0;
@@ -797,6 +871,81 @@
 			};
 			name = Release;
 		};
+		6A66DA852FE694EB009AEDF9 /* Debug configuration for PBXNativeTarget "MemoryIndexExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3B535J795R;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MemoryIndexExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MemoryIndexExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhufucdev.YW0FOS7E.Sumalr.MemoryIndexExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6A66DA862FE694EB009AEDF9 /* Release configuration for PBXNativeTarget "MemoryIndexExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3B535J795R;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MemoryIndexExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MemoryIndexExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhufucdev.YW0FOS7E.Sumalr.MemoryIndexExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		6A695FE62FE2356700DB08E0 /* Debug configuration for PBXNativeTarget "macOSShare" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -945,6 +1094,8 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Common/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
@@ -993,6 +1144,8 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Common/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
@@ -1098,6 +1251,14 @@
 			buildConfigurations = (
 				000000000000000111000000 /* Debug configuration for PBXNativeTarget "Sumalr" */,
 				000000000000000112000000 /* Release configuration for PBXNativeTarget "Sumalr" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		6A66DA842FE694EB009AEDF9 /* Build configuration list for PBXNativeTarget "MemoryIndexExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6A66DA852FE694EB009AEDF9 /* Debug configuration for PBXNativeTarget "MemoryIndexExtension" */,
+				6A66DA862FE694EB009AEDF9 /* Release configuration for PBXNativeTarget "MemoryIndexExtension" */,
 			);
 			defaultConfigurationName = Release;
 		};

@@ -6,6 +6,8 @@ import SwiftUI
 import Textual
 import Transmission
 import WebKit
+import CoreSpotlight
+import AppIntents
 
 struct LibraryPage: View {
     @Environment(\.errorHandler) var errorHandler
@@ -42,12 +44,13 @@ struct LibraryPage: View {
                         } label: {
                             MemoryItemView(memory)
                                 .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
                         }
                         .buttonStyle(.plain)
                         .swipeActions {
                             Button("Delete", systemImage: "trash", role: .destructive) {
-                                modelContext.delete(memory)
+                                remove(memory: memory)
                             }
                         }
                     #elseif os(iOS)
@@ -55,14 +58,14 @@ struct LibraryPage: View {
                             MemoryPage(memory)
                         } label: {
                             MemoryItemView(memory)
-                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
                         }
                         .buttonStyle(.plain)
                         .swipeActions {
                             Button("Delete", systemImage: "trash", role: .destructive) {
-                                modelContext.delete(memory)
+                                remove(memory: memory)
                             }
                         }
                     #endif
@@ -79,6 +82,13 @@ struct LibraryPage: View {
                 }
             }
         }
+        .onChange(of: memories) {
+            MemoryShortcutProvider.updateAppShortcutParameters()
+        }
+    }
+    
+    private func remove(memory: MemoryItem) {
+        modelContext.delete(memory)
     }
 }
 
@@ -159,7 +169,7 @@ struct MemoryItemView: View {
                     switch state {
                     case .`init`:
                         item.summary = nil
-                        try? modelContext.save()
+                        try modelContext.save()
                         progress = 0
                     case .scraping:
                         progress = 1
@@ -167,7 +177,7 @@ struct MemoryItemView: View {
                         progress = 2
                     case let .done(summary):
                         item.summary = summary
-                        try? modelContext.save()
+                        try modelContext.save()
                         progress = 3
                         isLoading = false
                         do {
@@ -183,7 +193,7 @@ struct MemoryItemView: View {
                         isLoading = false
                         break
                     }
-
+                    
                     if !isLoading {
                         break
                     }
