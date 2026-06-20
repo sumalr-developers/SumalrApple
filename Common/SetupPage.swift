@@ -51,7 +51,11 @@ public struct SetupPage: View {
                     .task(id: endpointBuffer) {
                         verifyState = .pending
                         // throttle for 1sec
-                        try? await Task.sleep(for: .seconds(1))
+                        do {
+                            try await Task.sleep(for: .seconds(1))
+                        } catch {
+                            return
+                        }
 
                         guard let endpointURL = URL(string: endpointBuffer) else {
                             verifyState = .invalidAddress
