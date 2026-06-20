@@ -13,6 +13,10 @@ import WebKit
     @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
     @State var showSetupSheet = false
     @State var showWebPreview = false
+    
+    init() {
+        MemoryShortcutProvider.updateAppShortcutParameters()
+    }
 
     var body: some Scene {
         Group {

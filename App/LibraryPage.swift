@@ -89,6 +89,7 @@ struct LibraryPage: View {
     
     private func remove(memory: MemoryItem) {
         modelContext.delete(memory)
+        MemoryShortcutProvider.updateAppShortcutParameters()
     }
 }
 
@@ -195,6 +196,7 @@ struct MemoryItemView: View {
                     }
                     
                     if !isLoading {
+                        MemoryShortcutProvider.updateAppShortcutParameters()
                         break
                     }
                 }
