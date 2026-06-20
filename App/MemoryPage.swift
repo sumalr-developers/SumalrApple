@@ -29,6 +29,13 @@ struct MemoryPage: View {
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
             #endif
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Link(destination: URL(string: item.url)!) {
+                            Label("Open in browser", systemImage: "arrow.up.forward.app")
+                        }
+                    }
+                }
         } else {
             Text("Item not found")
         }
