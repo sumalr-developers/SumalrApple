@@ -8,13 +8,18 @@
 import Common
 import SwiftUI
 import UIKit
+import SwiftData
 
 class ShareViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let attachments = extensionContext?.inputItems.flatMap { ($0 as! NSExtensionItem).attachments ?? [] } ?? []
-        let hostingController = UIHostingController(rootView: ShareSheetView(attachments).environment(\.dismissSharesheet, dismiss))
+        let hostingController = UIHostingController(
+            rootView: ShareSheetView(attachments)
+                .environment(\.dismissSharesheet, dismiss)
+                .modelContainer(appModelContainer)
+        )
 
         hostingController.view.frame = view.bounds
         view.addSubview(hostingController.view)

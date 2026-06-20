@@ -20,7 +20,7 @@ import WebKit
         .environment(\.showWebPreview, $showWebPreview)
         .environment(\.rlamusClient, $rlamusClient)
         .environment(\.getRlamusClient, getRlamusClient)
-        .modelContainer(for: [MemoryItem.self])
+        .modelContainer(appModelContainer)
     }
 
     func dependencyInjected<W: Scene>(_ wg: W) -> some Scene {
