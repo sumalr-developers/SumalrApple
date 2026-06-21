@@ -4,6 +4,8 @@ import SwiftUI
 import Textual
 
 struct MemoryPage: View {
+    @Environment(\.openURL) var openURL
+    
     let item: MemoryItem?
     init(_ item: MemoryItem? = nil) {
         self.item = item
@@ -31,8 +33,8 @@ struct MemoryPage: View {
             #endif
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
-                        Link(destination: URL(string: item.url)!) {
-                            Label("Open in browser", systemImage: "arrow.up.forward.app")
+                        Button("Open in browswer", systemImage: "arrow.up.forward.app") {
+                            openURL(URL(string: item.url)!)
                         }
                     }
                 }
