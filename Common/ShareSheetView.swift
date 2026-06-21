@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 public struct ShareSheetView: View {
     @Environment(\.dismissSharesheet) var dismiss
@@ -115,16 +115,16 @@ fileprivate struct CreatingView<P: BinaryFloatingPoint>: View {
     let progress: P
 
     var body: some View {
-        ProgressView(value: progress) {
-            Text("Creating tasks remotely...")
-        }
-        .padding()
+        ProgressView("Creating tasks remotely...", value: progress)
+            .progressViewStyle(.linear)
+            .padding()
     }
 }
 
 fileprivate struct CompletedView: View {
     @Environment(\.dismissSharesheet) var dismiss
-    
+    @State var animating = true
+
     var body: some View {
         VStack {
             Spacer()
@@ -132,12 +132,14 @@ fileprivate struct CompletedView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 48)
+                .symbolEffect(.drawOn, isActive: animating)
                 .foregroundStyle(.green)
             VStack(alignment: .leading) {
                 Text("Tasks submitted")
                     .font(.headline)
                 Text("You can track generation progress in the main app.")
             }
+            .padding(.horizontal)
             Spacer()
             FullWidthButton {
                 dismiss()
@@ -150,6 +152,9 @@ fileprivate struct CompletedView: View {
             }
             .tint(.clear)
             .padding()
+        }
+        .onAppear {
+            animating = false
         }
     }
 }
