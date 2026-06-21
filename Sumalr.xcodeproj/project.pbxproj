@@ -130,9 +130,9 @@
 		6A566DC52FE57A4700378452 /* Sumalr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sumalr.entitlements; sourceTree = "<group>"; };
 		6A66D88D2FE63A47009AEDF9 /* Sumalr-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sumalr-Info.plist"; sourceTree = "<group>"; };
 		6A66DA5F2FE671F3009AEDF9 /* AppIdentifiers.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppIdentifiers.xcconfig; sourceTree = "<group>"; };
-		6A66DA7B2FE694EB009AEDF9 /* MemoryIndexExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; name = MemoryIndexExtension.appex; path = "/Users/zhufu/Source/Swift/Sumalr/build/Debug-iphoneos/MemoryIndexExtension.appex"; sourceTree = "<absolute>"; };
 		6A695FD72FE2356600DB08E0 /* macOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = macOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A695FEC2FE235B800DB08E0 /* iOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A97C6CC2FE7A3B100684DEE /* MemoryIndexExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MemoryIndexExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF0C6B42FE23C1500B2E764 /* Common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF0C6BE2FE23C1600B2E764 /* CommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -286,6 +286,7 @@
 				6A695FEC2FE235B800DB08E0 /* iOSShare.appex */,
 				6AF0C6B42FE23C1500B2E764 /* Common.framework */,
 				6AF0C6BE2FE23C1600B2E764 /* CommonTests.xctest */,
+				6A97C6CC2FE7A3B100684DEE /* MemoryIndexExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -359,7 +360,7 @@
 			);
 			name = MemoryIndexExtension;
 			productName = MemoryIndexExtension;
-			productReference = 6A66DA7B2FE694EB009AEDF9 /* MemoryIndexExtension.appex */;
+			productReference = 6A97C6CC2FE7A3B100684DEE /* MemoryIndexExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		6A695FD62FE2356600DB08E0 /* macOSShare */ = {
@@ -1357,10 +1358,10 @@
 		};
 		6A64326F2FE527DE00D2368A /* XCRemoteSwiftPackageReference "Transmission" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nathantannar4/Transmission";
+			repositoryURL = "https://github.com/zhufucdev/Transmission";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.12.1;
+				minimumVersion = 2.12.3;
 			};
 		};
 		6A87CCCC2FE406C6004F5719 /* XCRemoteSwiftPackageReference "swiftui-introspect" */ = {

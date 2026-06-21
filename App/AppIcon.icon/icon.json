@@ -9,22 +9,53 @@
     {
       "layers" : [
         {
-          "fill" : {
-            "solid" : "display-p3:0.12372,0.14062,0.15698,1.00000"
-          },
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "display-p3:0.12372,0.14062,0.15698,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "display-p3:0.12372,0.14035,0.15698,1.00000"
+              }
+            }
+          ],
           "glass" : true,
           "image-name" : "3 – Layer.svg",
           "name" : "3 – Layer"
         },
         {
-          "fill" : "system-light",
-          "glass" : false,
+          "fill-specializations" : [
+            {
+              "value" : "system-light"
+            },
+            {
+              "appearance" : "tinted",
+              "value" : "system-light"
+            }
+          ],
+          "glass" : true,
           "image-name" : "2 – Layer.svg",
           "name" : "2 – Layer"
         },
         {
+          "fill-specializations" : [
+            {
+              "appearance" : "dark",
+              "value" : "system-light"
+            }
+          ],
           "image-name" : "1 – Layer.svg",
-          "name" : "1 – Layer"
+          "name" : "1 – Layer",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              32.130108470416985
+            ]
+          }
         }
       ],
       "shadow" : {
