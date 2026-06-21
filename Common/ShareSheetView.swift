@@ -28,12 +28,22 @@ public struct ShareSheetView: View {
                     CompletedView()
                 }
             }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close", systemImage: "xmark") {
+                        dismiss()
+                    }
+                }
+            }
             .alert(error: $error) {
                 Button("Cancel", role: .cancel) {
                     error = nil
                     dismiss()
                 }
             }
+            #if os(macOS)
+            .navigationTitle("Sumalr")
+            #endif
         }
     }
 

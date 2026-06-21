@@ -19,7 +19,7 @@
 		6A6432652FE44CED00D2368A /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432642FE44CED00D2368A /* Logging */; };
 		6A64326A2FE4547300D2368A /* Textual in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432692FE4547300D2368A /* Textual */; };
 		6A66DA8D2FE69D41009AEDF9 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
-		6A695FE32FE2356700DB08E0 /* macOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FD72FE2356600DB08E0 /* macOSShare.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6A695FE32FE2356700DB08E0 /* Create Sumalr task.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FD72FE2356600DB08E0 /* Create Sumalr task.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A695FF62FE235B800DB08E0 /* iOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FEC2FE235B800DB08E0 /* iOSShare.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A87CCCE2FE406C6004F5719 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 6A87CCCD2FE406C6004F5719 /* SwiftUIIntrospect */; };
 		6AF0C6BF2FE23C1600B2E764 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
@@ -110,7 +110,7 @@
 			dstSubfolder = PlugIns;
 			files = (
 				6A695FF62FE235B800DB08E0 /* iOSShare.appex in Embed Foundation Extensions */,
-				6A695FE32FE2356700DB08E0 /* macOSShare.appex in Embed Foundation Extensions */,
+				6A695FE32FE2356700DB08E0 /* Create Sumalr task.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 		};
@@ -130,7 +130,7 @@
 		6A566DC52FE57A4700378452 /* Sumalr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sumalr.entitlements; sourceTree = "<group>"; };
 		6A66D88D2FE63A47009AEDF9 /* Sumalr-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sumalr-Info.plist"; sourceTree = "<group>"; };
 		6A66DA5F2FE671F3009AEDF9 /* AppIdentifiers.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppIdentifiers.xcconfig; sourceTree = "<group>"; };
-		6A695FD72FE2356600DB08E0 /* macOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = macOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A695FD72FE2356600DB08E0 /* Create Sumalr task.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Create Sumalr task.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A695FEC2FE235B800DB08E0 /* iOSShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iOSShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A97C6CC2FE7A3B100684DEE /* MemoryIndexExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MemoryIndexExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF0C6B42FE23C1500B2E764 /* Common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -282,7 +282,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000120 /* Sumalr.app */,
-				6A695FD72FE2356600DB08E0 /* macOSShare.appex */,
+				6A695FD72FE2356600DB08E0 /* Create Sumalr task.appex */,
 				6A695FEC2FE235B800DB08E0 /* iOSShare.appex */,
 				6AF0C6B42FE23C1500B2E764 /* Common.framework */,
 				6AF0C6BE2FE23C1600B2E764 /* CommonTests.xctest */,
@@ -382,7 +382,7 @@
 			);
 			name = macOSShare;
 			productName = macOSShare;
-			productReference = 6A695FD72FE2356600DB08E0 /* macOSShare.appex */;
+			productReference = 6A695FD72FE2356600DB08E0 /* Create Sumalr task.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		6A695FEB2FE235B800DB08E0 /* iOSShare */ = {
@@ -974,16 +974,27 @@
 		6A695FE62FE2356700DB08E0 /* Debug configuration for PBXNativeTarget "macOSShare" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = macOSShare/macOSShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3B535J795R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = macOSShare/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = macOSShare;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -992,7 +1003,9 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhufucdev.YW0FOS7E.Sumalr.macOSShare;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = macOSShare;
+				PRODUCT_NAME = "Create Sumalr task";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -1006,16 +1019,27 @@
 		6A695FE72FE2356700DB08E0 /* Release configuration for PBXNativeTarget "macOSShare" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = macOSShare/macOSShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3B535J795R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = macOSShare/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = macOSShare;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1024,7 +1048,9 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhufucdev.YW0FOS7E.Sumalr.macOSShare;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = macOSShare;
+				PRODUCT_NAME = "Create Sumalr task";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;

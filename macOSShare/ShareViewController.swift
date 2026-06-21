@@ -6,36 +6,37 @@
 //
 
 import Cocoa
+import Common
+import SwiftData
+import SwiftUI
 
 class ShareViewController: NSViewController {
-
     override var nibName: NSNib.Name? {
         return NSNib.Name("ShareViewController")
     }
 
     override func loadView() {
         super.loadView()
-    
-        // Insert code here to customize the view
-        let item = self.extensionContext!.inputItems[0] as! NSExtensionItem
-        if let attachments = item.attachments {
-            NSLog("Attachments = %@", attachments as NSArray)
-        } else {
-            NSLog("No Attachments")
-        }
+
+        let attachments = extensionContext?.inputItems.flatMap { ($0 as! NSExtensionItem).attachments ?? [] } ?? []
+        let hostingController = NSHostingController(rootView:
+            ShareSheetView(attachments)
+                .environment(\.dismissSharesheet, dismiss)
+                .modelContainer(appModelContainer)
+        )
+
+        hostingController.view.frame = view.bounds
+        view.addSubview(hostingController.view)
+        addChild(hostingController)
+
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        hostingController.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        hostingController.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        hostingController.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
     }
 
-    @IBAction func send(_ sender: AnyObject?) {
-        let outputItem = NSExtensionItem()
-        // Complete implementation by setting the appropriate value on the output item
-    
-        let outputItems = [outputItem]
-        self.extensionContext!.completeRequest(returningItems: outputItems, completionHandler: nil)
-}
-
-    @IBAction func cancel(_ sender: AnyObject?) {
-        let cancelError = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
-        self.extensionContext!.cancelRequest(withError: cancelError)
+    func dismiss() {
+        extensionContext!.completeRequest(returningItems: nil)
     }
-
 }
