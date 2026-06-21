@@ -19,32 +19,49 @@ public struct ShareSheetView: View {
     }
 
     public var body: some View {
-        NavigationStack {
-            Group {
+        #if os(macOS)
+            VStack {
                 switch state {
                 case .creating:
+                    Spacer()
                     creatingView
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                    }
+                    .padding()
                 case .completed:
                     CompletedView()
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close", systemImage: "xmark") {
+        #else
+            NavigationStack {
+                Group {
+                    switch state {
+                    case .creating:
+                        creatingView
+                    case .completed:
+                        CompletedView()
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Close", systemImage: "xmark") {
+                            dismiss()
+                        }
+                    }
+                }
+                .alert(error: $error) {
+                    Button("Cancel", role: .cancel) {
+                        error = nil
                         dismiss()
                     }
                 }
             }
-            .alert(error: $error) {
-                Button("Cancel", role: .cancel) {
-                    error = nil
-                    dismiss()
-                }
-            }
-            #if os(macOS)
-            .navigationTitle("Sumalr")
-            #endif
-        }
+        #endif
     }
 
     var creatingView: some View {
@@ -125,9 +142,15 @@ fileprivate struct CreatingView<P: BinaryFloatingPoint>: View {
     let progress: P
 
     var body: some View {
-        ProgressView("Creating tasks remotely...", value: progress)
-            .progressViewStyle(.linear)
-            .padding()
+        Group {
+            if progress.isZero {
+                ProgressView("Creating tasks remotely...")
+            } else {
+                ProgressView("Creating tasks remotely...", value: progress)
+            }
+        }
+        .progressViewStyle(.linear)
+        .padding()
     }
 }
 
