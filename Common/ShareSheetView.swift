@@ -48,8 +48,10 @@ public struct ShareSheetView: View {
                 do {
                     for item in sharedItems {
                         let url = try await item.loadObject(ofType: URL.self)
-                        let item = try await addMemory(url: url, client: rlamusClient)
-                        if let title = try? await getWebPageTitle(url: url) {
+                        async let itemTask = try addMemory(url: url, client: rlamusClient)
+                        async let titleTask = try? getWebPageTitle(url: url)
+                        let (item, title) = try await (itemTask, titleTask)
+                        if let title {
                             item.title = title
                         }
                         modelContext.insert(item)
