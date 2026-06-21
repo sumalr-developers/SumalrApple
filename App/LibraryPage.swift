@@ -1,4 +1,6 @@
+import AppIntents
 import Common
+import CoreSpotlight
 import Foundation
 import Logging
 import SwiftData
@@ -6,8 +8,6 @@ import SwiftUI
 import Textual
 import Transmission
 import WebKit
-import CoreSpotlight
-import AppIntents
 
 struct LibraryPage: View {
     @Environment(\.errorHandler) var errorHandler
@@ -19,7 +19,7 @@ struct LibraryPage: View {
         @Environment(\.openWindow) var openWindow
     #endif
 
-    @Query var memories: [MemoryItem]
+    @Query(sort: [SortDescriptor<MemoryItem>(\.creation, order: .reverse)], animation: .default) var memories: [MemoryItem]
 
     var columns: [GridItem] {
         let columns: Int
@@ -86,7 +86,7 @@ struct LibraryPage: View {
             MemoryShortcutProvider.updateAppShortcutParameters()
         }
     }
-    
+
     private func remove(memory: MemoryItem) {
         modelContext.delete(memory)
         MemoryShortcutProvider.updateAppShortcutParameters()
@@ -194,7 +194,7 @@ struct MemoryItemView: View {
                         isLoading = false
                         break
                     }
-                    
+
                     if !isLoading {
                         MemoryShortcutProvider.updateAppShortcutParameters()
                         break
