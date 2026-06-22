@@ -9,8 +9,8 @@ public struct RlamusTask: Decodable, Equatable, Sendable {
 public enum RlamusTaskState: Equatable, Sendable {
     case `init`
     case scraping
-    case summarizing
-    case done(summary: String)
+    case summarizing(title: String?)
+    case done(title: String?, summary: String)
     case failed(reason: String)
 }
 
@@ -21,6 +21,15 @@ extension RlamusTaskState: Decodable {
         case summarizing
         case done
         case failed
+    }
+    
+    enum SummarizingCodingKeys: CodingKey {
+        case title
+    }
+    
+    enum DoneCodingKeys: CodingKey {
+        case title
+        case summary
     }
     
     public init(from decoder: any Decoder) throws {
@@ -35,9 +44,14 @@ extension RlamusTaskState: Decodable {
             case .scraping:
                 self = RlamusTaskState.scraping
             case .summarizing:
-                self = RlamusTaskState.summarizing
+                let nested = try container.nestedContainer(keyedBy: SummarizingCodingKeys.self, forKey: CodingKeys.summarizing)
+                self = RlamusTaskState.summarizing(title: try? nested.decode(Optional<String>.self, forKey: .title))
             case .done:
-                self = RlamusTaskState.done(summary: try container.decode(String.self, forKey: CodingKeys.`done`))
+                let nested = try container.nestedContainer(keyedBy: DoneCodingKeys.self, forKey: CodingKeys.`done`)
+                self = RlamusTaskState.done(
+                    title: try? nested.decode(Optional<String>.self, forKey: DoneCodingKeys.title),
+                    summary: try nested.decode(String.self, forKey: DoneCodingKeys.summary)
+                )
             case .failed:
                 self = RlamusTaskState.failed(reason: try container.decode(String.self, forKey: CodingKeys.failed))
             }
@@ -48,8 +62,6 @@ extension RlamusTaskState: Decodable {
                 self = RlamusTaskState.`init`
             case "scraping":
                 self = RlamusTaskState.scraping
-            case "summarizing":
-                self = RlamusTaskState.summarizing
             default:
                 throw DecodingError.dataCorruptedError(in: state, debugDescription: "Known state, expected \"init\", \"scraping\" or \"summarizing\"")
             }
