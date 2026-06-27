@@ -175,15 +175,11 @@ struct MemoryItemView: View {
                     case .scraping:
                         progress = 1
                     case let .summarizing(title):
-                        if item.title == nil {
-                            item.title = title
-                        }
+                        item.title = title
                         progress = 2
                     case let .done(title, summary):
                         item.summary = summary
-                        if item.title == nil {
-                            item.title = title
-                        }
+                        item.title = title
                         try modelContext.save()
                         progress = 3
                         isLoading = false
