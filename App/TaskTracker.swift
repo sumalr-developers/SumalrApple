@@ -46,8 +46,12 @@ class TaskTracker {
         } else {
             initialState = .`init`
         }
-        let task = TrackedTask(value: RlamusTask(id: memory.taskID, url: URL(string: memory.url)!, state: initialState), initialTitle: memory.title, creation: memory.creation)
         appLogger.debug("created new tracked task for \(memory.taskID)")
+        let task = TrackedTask(value: RlamusTask(id: memory.taskID, url: URL(string: memory.url)!, state: initialState), initialTitle: memory.title, creation: memory.creation)
+        if case .done = initialState {
+            return task
+        }
+        
         data.insertTask(task, id: memory.taskID, job: createUpdatingJob(for: task, tracker: self))
         return task
     }
