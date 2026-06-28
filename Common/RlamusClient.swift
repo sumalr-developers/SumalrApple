@@ -61,7 +61,7 @@ public struct RlamusClient: Sendable {
         return uuid
     }
 
-    public func pollTask(id: UUID) async throws (PollTaskError) -> RlamusTask? {
+    public func pollTask(id: UUID) async throws (PollTaskError) -> RlamusTask {
         let request = HTTPRequest(url: endpoint.appending(components: "task", id.uuidString))
         let (data, res): (Data, HTTPResponse)
         do {

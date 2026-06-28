@@ -3,7 +3,13 @@ import Foundation
 public struct RlamusTask: Decodable, Equatable, Sendable {
     public var id: UUID
     public var url: URL
-    public var state: RlamusTaskState = .`init`
+    public var state: RlamusTaskState
+    
+    public init(id: UUID, url: URL, state: RlamusTaskState = .`init`) {
+        self.id = id
+        self.url = url
+        self.state = state
+    }
 }
 
 public enum RlamusTaskState: Equatable, Sendable {
@@ -65,6 +71,27 @@ extension RlamusTaskState: Decodable {
             default:
                 throw DecodingError.dataCorruptedError(in: state, debugDescription: "Known state, expected \"init\", \"scraping\" or \"summarizing\"")
             }
+        }
+    }
+}
+
+public extension RlamusTask {
+    var summary: String? {
+        if case let .done(_, summary) = self.state {
+            summary
+        } else {
+            nil
+        }
+    }
+    
+    var title: String? {
+        switch self.state {
+        case let .done(title, _):
+            title
+        case let .summarizing(title):
+            title
+        default:
+            nil
         }
     }
 }

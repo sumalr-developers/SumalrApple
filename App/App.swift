@@ -9,11 +9,14 @@ import SwiftUI
 import WebKit
 
 @main struct SumalrApp: App {
+    @Environment(\.scenePhase) var scenePhase
+    
     @State var setupRlamus = AsyncChannel<RlamusClient>()
     @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
     @State var showSetupSheet = false
     @State var showWebPreview = false
-    
+    @State var taskTracker: TaskTracker? = nil
+
     init() {
         MemoryShortcutProvider.updateAppShortcutParameters()
     }
@@ -27,7 +30,26 @@ import WebKit
         .environment(\.showWebPreview, $showWebPreview)
         .environment(\.rlamusClient, $rlamusClient)
         .environment(\.getRlamusClient, getRlamusClient)
+        .environment(\.tasks, {
+            let tt = TaskTracker(getClient: getRlamusClient, modelContext: appModelContainer.mainContext)
+            taskTracker = tt
+            return tt
+        }())
         .modelContainer(appModelContainer)
+        .onChange(of: scenePhase) { oldValue, newValue in
+            Task {
+                switch newValue {
+                case .active:
+                    do {
+                        try await taskTracker?.resumeAll()
+                    } catch {
+                        appLogger.error("unable to resume task tracker", error: error)
+                    }
+                default:
+                    await taskTracker?.pauseAll()
+                }
+            }
+        }
     }
 
     func dependencyInjected<W: Scene>(_ wg: W) -> some Scene {
@@ -139,6 +161,7 @@ fileprivate struct MainScene: Scene {
 
 fileprivate struct MemoryScene: Scene {
     @Environment(\.modelContext) var modelContext
+    @Environment(\.tasks) var tasks
 
     @Binding var showSetupSheet: Bool
     let setupRlamus: AsyncChannel<RlamusClient>
@@ -148,7 +171,7 @@ fileprivate struct MemoryScene: Scene {
             Group {
                 if let openMemory,
                    let memory: MemoryItem = modelContext.registeredModel(for: openMemory.pk) {
-                    MemoryPage(memory)
+                    MemoryPage(tasks.tracked(memory: memory))
                 } else {
                     MemoryPage()
                 }

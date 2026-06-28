@@ -15,6 +15,7 @@ struct LibraryPage: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.horizontalSizeClass) var windowSize
     @Environment(\.showWebPreview) var showWebPreview
+    @Environment(\.tasks) var tasks
     #if os(macOS)
         @Environment(\.openWindow) var openWindow
     #endif
@@ -42,7 +43,7 @@ struct LibraryPage: View {
                         Button {
                             openWindow(value: OpenMemory(memory))
                         } label: {
-                            MemoryItemView(memory)
+                            TaskItemView(tasks.tracked(memory: memory))
                                 .padding()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
@@ -55,9 +56,9 @@ struct LibraryPage: View {
                         }
                     #elseif os(iOS)
                         DestinationLink(transition: .zoom) {
-                            MemoryPage(memory)
+                            MemoryPage(tasks.tracked(memory: memory))
                         } label: {
-                            MemoryItemView(memory)
+                            TaskItemView(tasks.tracked(memory: memory))
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
@@ -93,27 +94,28 @@ struct LibraryPage: View {
     }
 }
 
-struct MemoryItemView: View {
-    @Environment(\.getRlamusClient) var getRlamusClient
-    @Environment(\.errorHandler) var errorHandler
-    @Environment(\.scenePhase) var scenePhase
-    @Environment(\.modelContext) var modelContext
-
-    let item: MemoryItem
-    @State var isLoading: Bool
-    @State var progress: Int
-    @State var errorMessage: String?
-
-    init(_ item: MemoryItem) {
-        self.item = item
-        isLoading = item.summary == nil
-        progress = 0
-        errorMessage = nil
+struct TaskItemView: View {
+    let item: TrackedTask
+    var isLoading: Bool {
+        item.summary == nil
+    }
+    var progress: Int {
+        switch item.value.state {
+        case .`init`:
+            0
+        case .scraping:
+            1
+        case .summarizing:
+            2
+        case .done:
+            3
+        case .failed:
+            3
+        }
     }
 
-    private struct ItemIDScenePhaseTuple: Equatable {
-        let scene: ScenePhase
-        let itemId: PersistentIdentifier
+    init(_ item: TrackedTask) {
+        self.item = item
     }
 
     var body: some View {
@@ -139,73 +141,21 @@ struct MemoryItemView: View {
                 }())
                     .disabled(true)
             }
-            if let errorMessage {
+            if let errorMessage = item.error?.localizedDescription {
                 Text(errorMessage)
+                    .foregroundStyle(.red)
+            } else if case let .failed(message) = item.value.state {
+                Text(message)
                     .foregroundStyle(.red)
             }
             Spacer()
-            Link(destination: URL(string: item.url)!) {
+            Link(destination: item.url) {
                 HStack {
                     Image(systemName: "safari")
-                    Text(item.url)
+                    Text(item.url.absoluteString)
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }
-            }
-        }
-        .task(id: ItemIDScenePhaseTuple(scene: scenePhase, itemId: item.persistentModelID)) {
-            if item.summary != nil || scenePhase != .active {
-                return
-            }
-
-            do {
-                let client: RlamusClient
-                do throws (CancellationError) {
-                    client = try await getRlamusClient()
-                } catch {
-                    return
-                }
-
-                for try await state in item.streamTaskState(client: client) {
-                    switch state {
-                    case .`init`:
-                        item.summary = nil
-                        try modelContext.save()
-                        progress = 0
-                    case .scraping:
-                        progress = 1
-                    case let .summarizing(title):
-                        item.title = title
-                        progress = 2
-                    case let .done(title, summary):
-                        item.summary = summary
-                        item.title = title
-                        try modelContext.save()
-                        progress = 3
-                        isLoading = false
-                        do {
-                            // delete from server for privacy
-                            try await client.deleteTask(id: item.taskID)
-                        } catch {
-                            appLogger.info("failed to delete after pull", error: error, metadata: ["taskID": .string(item.taskID.uuidString)])
-                        }
-                        break
-                    case let .failed(reason):
-                        progress = 3
-                        errorMessage = reason
-                        isLoading = false
-                        break
-                    }
-
-                    if !isLoading {
-                        MemoryShortcutProvider.updateAppShortcutParameters()
-                        break
-                    }
-                }
-            } catch {
-                appLogger.critical("unable to update memory", error: error, metadata: ["taskID": .string(item.taskID.uuidString)])
-                errorMessage = error.localizedDescription
-                isLoading = false
             }
         }
     }
@@ -213,20 +163,13 @@ struct MemoryItemView: View {
 
 #Preview {
     VStack {
-        MemoryItemView({
-            let r = MemoryItem(url: "https://example.com", taskID: UUID())
-            r.summary = "Example domain is for demostration purpose only and shouldn't be used in production."
-            r.title = "Some page"
-            return r
-        }())
+        TaskItemView(TrackedTask(value: RlamusTask(id: UUID(), url: URL(string: "https://example.com")!), initialTitle: "Some page", creation: .now))
             .padding()
 
-        MemoryItemView({
-            let r = MemoryItem(url: "https://example.com", taskID: UUID())
-            r.summary = Array(repeating: "Example domain is for demostration purpose only and shouldn't be used in production.", count: 50).joined(separator: "\n")
-            r.title = "Some page"
-            return r
-        }())
+        TaskItemView(TrackedTask(value: RlamusTask(id: UUID(), url: URL(string: "https://example.com")!, state: .scraping), initialTitle: "Some page", creation: .now))
+            .padding()
+
+        TaskItemView(TrackedTask(value: RlamusTask(id: UUID(), url: URL(string: "https://example.com")!, state: .done(title: "Some page", summary: Array(repeating: "Example domain is for demostration purpose only and shouldn't be used in production.", count: 50).joined(separator: "\n"))), creation: .now))
             .padding()
     }
 }

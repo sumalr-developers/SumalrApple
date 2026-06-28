@@ -4,7 +4,8 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
-    
+    @Environment(\.tasks) var tasks
+
     @State var deepLink: DeepLink? = nil
     @State var selectedTab: Page = .library
     
@@ -17,7 +18,11 @@ struct ContentView: View {
                         .navigationDestination(item: $deepLink) { dl in
                             switch dl {
                             case .memory(let taskID):
-                                MemoryPage(try? MemoryItem.fetch(taskID: taskID, modelContext: modelContext))
+                                if let memory = try? MemoryItem.fetch(taskID: taskID, modelContext: modelContext) {
+                                    MemoryPage(tasks.tracked(memory: memory))
+                                } else {
+                                    MemoryPage()
+                                }
                             }
                         }
                 }

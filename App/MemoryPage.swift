@@ -6,8 +6,8 @@ import Textual
 struct MemoryPage: View {
     @Environment(\.openURL) var openURL
     
-    let item: MemoryItem?
-    init(_ item: MemoryItem? = nil) {
+    let item: TrackedTask?
+    init(_ item: TrackedTask? = nil) {
         self.item = item
     }
 
@@ -15,7 +15,7 @@ struct MemoryPage: View {
         if let item {
             ScrollView(.vertical) {
                 VStack {
-                    if let summary = item.summary {
+                    if let summary = item.value.summary {
                         StructuredText(markdown: summary)
                             .textual.textSelection(.enabled)
                     }
@@ -34,7 +34,7 @@ struct MemoryPage: View {
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         Button("Open in browswer", systemImage: "arrow.up.forward.app") {
-                            openURL(URL(string: item.url)!)
+                            openURL(item.url)
                         }
                     }
                 }
