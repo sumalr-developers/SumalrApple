@@ -17,3 +17,11 @@ public func getRlamusFrom(userDefaults: UserDefaults) -> RlamusClient? {
 public func setRlamusTo(userDefaults: UserDefaults, endpoint: URL?) {
     userDefaults.setValue(endpoint?.absoluteString, forKey: "rlamusURL")
 }
+
+public func setDeviceToken(_ newValue: Data, to: UserDefaults) {
+    to.set(newValue, forKey: "deviceToken")
+}
+
+public func getDeviceToken(from: UserDefaults) -> Data? {
+    from.data(forKey: "deviceToken")
+}

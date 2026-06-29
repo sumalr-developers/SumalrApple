@@ -73,9 +73,16 @@ public struct ShareSheetView: View {
                 }
 
                 do {
+                    let deviceInfo: NotificationRegistration? =
+                        if let token = getDeviceToken(from: .appGroup),
+                        let topic = Bundle.main.bundleIdentifier {
+                            NotificationRegistration(deviceToken: token, topic: String(topic[topic.startIndex..<topic.lastIndex(of: ".")!]))
+                        } else {
+                            nil
+                        }
                     for item in sharedItems {
                         let url = try await item.loadObject(ofType: URL.self)
-                        async let itemTask = try addMemory(url: url, client: rlamusClient)
+                        async let itemTask = try addMemory(url: url, client: rlamusClient, registerForNotifications: deviceInfo)
                         async let titleTask = try? getWebPageTitle(url: url)
                         let (item, title) = try await (itemTask, titleTask)
                         if let title {

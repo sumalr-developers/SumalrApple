@@ -20,7 +20,7 @@ public func getWebPageTitle(url: URL, session: URLSession = .shared) async throw
     webview.navigationDelegate = delegate
     return await withCheckedContinuation { continuation in
         delegate.onFinish = {
-            continuation.resume(returning: webview.title)
+            continuation.resume(returning: webview.title?.isEmpty == false ? webview.title : nil)
         }
         webview.load(url)
     }

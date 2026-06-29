@@ -39,13 +39,18 @@ public struct RlamusClient: Sendable {
         }
     }
 
-    public func createTask(url: String) async throws (CreateTaskError) -> UUID {
+    public func createTask(url: String, registerForNotifications apnInfo: NotificationRegistration? = nil) async throws (CreateTaskError) -> UUID {
         var request = HTTPRequest(method: .post, url: endpoint.appending(component: "task"))
         request.headerFields[.contentType] = "application/x-www-form-urlencoded"
 
         let (data, res): (Data, HTTPResponse)
         do {
-            (data, res) = try await urlSession.upload(for: request, from: "url=\(url.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)".data(using: .utf8)!)
+            var payload = "url=\(url.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+            if let apnInfo {
+                payload += "&apn_device_token=\(apnInfo.deviceToken.map { String(format: "%02hhx", $0) }.joined())"
+                payload += "&apn_topic=\(apnInfo.topic.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+            }
+            (data, res) = try await urlSession.upload(for: request, from: payload.data(using: .utf8)!)
         } catch {
             throw .io(error)
         }
@@ -128,6 +133,16 @@ public struct RlamusClient: Sendable {
         } else if res.status != .ok {
             throw .unexpectedStatus(res.status)
         }
+    }
+}
+
+public struct NotificationRegistration: Sendable {
+    let deviceToken: Data
+    let topic: String
+    
+    public init(deviceToken: Data, topic: String) {
+        self.deviceToken = deviceToken
+        self.topic = topic
     }
 }
 

@@ -1,0 +1,96 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Account" : {
+
+    },
+    "Add" : {
+
+    },
+    "Close" : {
+
+    },
+    "Could not parse the address of your input" : {
+
+    },
+    "Created %@ ago" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Enter website address" : {
+
+    },
+    "Invalid address" : {
+
+    },
+    "Item not found" : {
+
+    },
+    "Library" : {
+
+    },
+    "New from URL" : {
+
+    },
+    "Open a memory" : {
+
+    },
+    "Open in browswer" : {
+
+    },
+    "Open memory" : {
+
+    },
+    "RECENT_TASK_DONE" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A recent task has finished"
+          }
+        }
+      }
+    },
+    "Specified memory couldn't be found" : {
+
+    },
+    "Sumalr" : {
+
+    },
+    "TASK_DONE" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remote task completed"
+          }
+        }
+      }
+    },
+    "TASK_TITLED_X_DONE" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%1$(title)@” has finished summarizing"
+          }
+        }
+      }
+    },
+    "Unnamed memory" : {
+
+    },
+    "URL" : {
+
+    },
+    "Use" : {
+
+    }
+  },
+  "version" : "1.3"
+}

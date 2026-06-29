@@ -10,7 +10,12 @@ import WebKit
 
 @main struct SumalrApp: App {
     @Environment(\.scenePhase) var scenePhase
-    
+    #if os(iOS)
+        @UIApplicationDelegateAdaptor(UIApp.self) var appDelegate
+    #elseif os(macOS)
+        @NSApplicationDelegateAdaptor(NSApp.self) var appDelegate
+    #endif
+
     @State var setupRlamus = AsyncChannel<RlamusClient>()
     @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
     @State var showSetupSheet = false
@@ -30,13 +35,14 @@ import WebKit
         .environment(\.showWebPreview, $showWebPreview)
         .environment(\.rlamusClient, $rlamusClient)
         .environment(\.getRlamusClient, getRlamusClient)
+        .environment(\.deviceToken, appDelegate.deviceToken)
         .environment(\.tasks, {
             let tt = TaskTracker(getClient: getRlamusClient, modelContext: appModelContainer.mainContext)
             taskTracker = tt
             return tt
         }())
         .modelContainer(appModelContainer)
-        .onChange(of: scenePhase) { oldValue, newValue in
+        .onChange(of: scenePhase) { _, newValue in
             Task {
                 switch newValue {
                 case .active:
@@ -76,6 +82,7 @@ fileprivate struct MainScene: Scene {
     @Environment(\.showWebPreview) var showWebPreview
     @Environment(\.rlamusClient) var rlamusClient
     @Environment(\.modelContext) var modelContext
+    @Environment(\.deviceToken) var deviceToken
 
     @Binding var showSetupSheet: Bool
     let setupRlamus: AsyncChannel<RlamusClient>
@@ -104,7 +111,12 @@ fileprivate struct MainScene: Scene {
                             }
 
                             let response = await errorHandler.runCatching { @MainActor in
-                                let item = try await addMemory(url: url, client: client)
+                                let item = if let deviceToken, let topic = Bundle.main.bundleIdentifier {
+                                    try await addMemory(url: url, client: client,
+                                                        registerForNotifications: .init(deviceToken: deviceToken, topic: topic))
+                                } else {
+                                    try await addMemory(url: url, client: client)
+                                }
                                 item.title = title.isEmpty ? nil : title
                                 modelContext.insert(item)
                                 try modelContext.save()
