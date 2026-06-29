@@ -7,8 +7,8 @@
 
 import Foundation
 
-public func addMemory(url: URL, client: RlamusClient) async throws (CreateTaskError) -> MemoryItem {
-    let taskID = try await client.createTask(url: url.absoluteString)
+public func addMemory(url: URL, client: RlamusClient, registerForNotifications info: NotificationRegistration? = nil) async throws (CreateTaskError) -> MemoryItem {
+    let taskID = try await client.createTask(url: url.absoluteString, registerForNotifications: info)
     let item = MemoryItem(url: url.absoluteString, taskID: taskID)
     return item
 }
