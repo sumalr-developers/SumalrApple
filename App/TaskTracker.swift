@@ -12,7 +12,7 @@ class TaskTracker {
         self.getClient = getClient
         self.modelContext = modelContext
     }
-
+    
     func tracked(id: UUID, title: String?, creation: Date) async throws (TaskTrackingError) -> TrackedTask {
         if let task = data.tasks[id] {
             return task
@@ -116,9 +116,16 @@ func createUpdatingJob(for tracked: TrackedTask, tracker: TaskTracker) -> Task<V
     }
 }
 
+@MainActor
 fileprivate class TaskTrackerData {
     var tasks = [UUID: TrackedTask]()
     var jobs = [UUID: Task<Void, Never>]()
+    
+    deinit {
+        for job in jobs.values {
+            job.cancel()
+        }
+    }
 
     func insertTask(_ value: TrackedTask, id: UUID, job: Task<Void, Never>) {
         tasks[id] = value

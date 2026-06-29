@@ -37,6 +37,9 @@ import WebKit
         .environment(\.getRlamusClient, getRlamusClient)
         .environment(\.deviceToken, appDelegate.deviceToken)
         .environment(\.tasks, {
+            if let taskTracker {
+                return taskTracker
+            }
             let tt = TaskTracker(getClient: getRlamusClient, modelContext: appModelContainer.mainContext)
             taskTracker = tt
             return tt
