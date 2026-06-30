@@ -3,7 +3,7 @@ import Foundation
 import HTTPTypes
 import HTTPTypesFoundation
 
-public struct RlamusClient: Sendable {
+public struct RlamusClient: Sendable, Equatable {
     public var endpoint: URL
     public var urlSession: URLSession
 

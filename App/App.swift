@@ -17,10 +17,16 @@ import WebKit
     #endif
 
     @State var setupRlamus = AsyncChannel<RlamusClient>()
-    @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
     @State var showSetupSheet = false
     @State var showWebPreview = false
-    @State var taskTracker: TaskTracker? = nil
+    @State var taskTracker: TaskTracker? = {
+        if let rlamusClient = getRlamusFrom(userDefaults: .appGroup) {
+            TaskTracker(rlamusClient: rlamusClient, modelContext: appModelContainer.mainContext)
+        } else {
+            nil
+        }
+    }()
+    @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
 
     init() {
         MemoryShortcutProvider.updateAppShortcutParameters()
@@ -36,33 +42,29 @@ import WebKit
         .environment(\.rlamusClient, $rlamusClient)
         .environment(\.getRlamusClient, getRlamusClient)
         .environment(\.deviceToken, appDelegate.deviceToken)
-        .environment(\.tasks, {
-            if let taskTracker {
-                return taskTracker
-            }
-            let tt = TaskTracker(getClient: getRlamusClient, modelContext: appModelContainer.mainContext)
-            taskTracker = tt
-            return tt
-        }())
+        .environment(\.tasks, taskTracker)
         .modelContainer(appModelContainer)
         .onChange(of: scenePhase) { _, newValue in
             Task {
                 switch newValue {
                 case .active:
-                    do {
-                        try await taskTracker?.resumeAll()
-                    } catch {
-                        appLogger.error("unable to resume task tracker", error: error)
-                    }
+                    await taskTracker?.resumeAll()
+                case .background:
+                    break
+                case .inactive:
+                    fallthrough
                 default:
                     await taskTracker?.pauseAll()
                 }
             }
         }
-    }
-
-    func dependencyInjected<W: Scene>(_ wg: W) -> some Scene {
-        wg
+        .onChange(of: rlamusClient) { _, newValue in
+            if let newValue {
+                taskTracker = TaskTracker(rlamusClient: newValue, modelContext: appModelContainer.mainContext)
+            } else {
+                taskTracker = nil
+            }
+        }
     }
 
     func getRlamusClient() async throws (CancellationError) -> RlamusClient {
@@ -186,7 +188,7 @@ fileprivate struct MemoryScene: Scene {
             Group {
                 if let openMemory,
                    let memory: MemoryItem = modelContext.registeredModel(for: openMemory.pk) {
-                    MemoryPage(tasks.tracked(memory: memory))
+                    MemoryPage(tasks?.tracked(memory: memory) ?? TrackedTask(memory: memory))
                 } else {
                     MemoryPage()
                 }

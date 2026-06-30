@@ -43,7 +43,7 @@ struct LibraryPage: View {
                         Button {
                             openWindow(value: OpenMemory(memory))
                         } label: {
-                            TaskItemView(tasks.tracked(memory: memory))
+                            TaskItemView(tasks?.tracked(memory: memory) ?? TrackedTask(memory: memory))
                                 .padding()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))
@@ -56,9 +56,9 @@ struct LibraryPage: View {
                         }
                     #elseif os(iOS)
                         DestinationLink(transition: .zoom) {
-                            MemoryPage(tasks.tracked(memory: memory))
+                            MemoryPage(tasks?.tracked(memory: memory) ?? TrackedTask(memory: memory))
                         } label: {
-                            TaskItemView(tasks.tracked(memory: memory))
+                            TaskItemView(tasks?.tracked(memory: memory) ?? TrackedTask(memory: memory))
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background.secondary))

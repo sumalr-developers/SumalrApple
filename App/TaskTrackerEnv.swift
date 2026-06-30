@@ -4,6 +4,5 @@ import SwiftUI
 import SwiftData
 
 extension EnvironmentValues {
-    @Entry var tasks: TaskTracker = .init(getClient: { fatalError() },
-                                          modelContext: appModelContainer.mainContext)
+    @Entry var tasks: TaskTracker?
 }

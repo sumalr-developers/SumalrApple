@@ -5,33 +5,22 @@ import SwiftData
 
 class TaskTracker {
     private let data = TaskTrackerData()
-    let getClient: @Sendable () async throws (CancellationError) -> RlamusClient
+    let client: RlamusClient
     let modelContext: ModelContext
 
-    init(getClient: @escaping @Sendable () async throws (CancellationError) -> RlamusClient, modelContext: ModelContext) {
-        self.getClient = getClient
+    init(rlamusClient: RlamusClient, modelContext: ModelContext) {
+        self.client = rlamusClient
         self.modelContext = modelContext
     }
     
-    func tracked(id: UUID, title: String?, creation: Date) async throws (TaskTrackingError) -> TrackedTask {
+    func tracked(id: UUID, title: String?, creation: Date) async throws (PollTaskError) -> TrackedTask {
         if let task = data.tasks[id] {
             return task
         }
 
-        let client: RlamusClient
-        do {
-            client = try await getClient()
-        } catch {
-            throw .clientCreationCanceled
-        }
-        let stale: RlamusTask
-        do throws (PollTaskError) {
-            stale = try await client.pollTask(id: id)
-        } catch {
-            throw .poll(error)
-        }
+        let stale: RlamusTask = try await client.pollTask(id: id)
         let tracked = TrackedTask(value: stale, initialTitle: title, creation: creation)
-        data.insertTask(tracked, id: id, job: createUpdatingJob(for: tracked, tracker: self))
+        data.insertTask(tracked, id: id, job: createUpdatingJob(for: tracked))
         return tracked
     }
 
@@ -40,19 +29,12 @@ class TaskTracker {
             return task
         }
 
-        let initialState: RlamusTaskState
-        if let summary = memory.summary {
-            initialState = .done(title: memory.title, summary: summary)
-        } else {
-            initialState = .`init`
-        }
-        appLogger.debug("created new tracked task for \(memory.taskID)")
-        let task = TrackedTask(value: RlamusTask(id: memory.taskID, url: URL(string: memory.url)!, state: initialState), initialTitle: memory.title, creation: memory.creation)
-        if case .done = initialState {
+        let task = TrackedTask(memory: memory)
+        if case .done = task.value.state {
             return task
         }
         
-        data.insertTask(task, id: memory.taskID, job: createUpdatingJob(for: task, tracker: self))
+        data.insertTask(task, id: memory.taskID, job: createUpdatingJob(for: task))
         return task
     }
 
@@ -62,59 +44,52 @@ class TaskTracker {
         }
     }
 
-    func resumeAll() async throws (TaskTrackingError) {
+    func resumeAll() async {
         for (id, task) in data.tasks {
-            data.updateJob(for: id, newValue: createUpdatingJob(for: task, tracker: self))
+            data.updateJob(for: id, newValue: createUpdatingJob(for: task))
         }
     }
-}
-
-enum TaskTrackingError: Error {
-    case clientCreationCanceled
-    case poll(PollTaskError)
-}
-
-func createUpdatingJob(for tracked: TrackedTask, tracker: TaskTracker) -> Task<Void, Never> {
-    return Task.detached {
-        let client: RlamusClient
-        do {
-            client = try await tracker.getClient()
-        } catch {
-            await MainActor.run {
-                tracked._error = error
-            }
-            return
-        }
-        var stream = client.streamTask(id: await tracked.value.id).makeAsyncIterator()
-        do {
-            while let next = try await stream.next() {
-                await MainActor.run {
-                    tracked._value = next
-                    if let memory = try? MemoryItem.fetch(taskID: tracked.value.id, modelContext: tracker.modelContext) {
-                        memory.summary = next.summary
-                        if let title = next.title {
-                            memory.title = title
+    
+    func createUpdatingJob(for tracked: TrackedTask) -> Task<Void, Never> {
+        return Task.detached { [self] in
+            var stream = client.streamTask(id: await tracked.value.id).makeAsyncIterator()
+            do {
+                while let next = try await stream.next() {
+                    await MainActor.run {
+                        tracked._value = next
+                        if let memory = try? MemoryItem.fetch(taskID: tracked.value.id, modelContext: modelContext) {
+                            memory.summary = next.summary
+                            if let title = next.title {
+                                memory.title = title
+                            }
+                            try? modelContext.save()
                         }
-                        try? tracker.modelContext.save()
+                    }
+                    if case .done = next.state {
+                        do {
+                            // delete from server for privacy
+                            try await client.deleteTask(id: tracked.id)
+                        } catch {
+                            let taskID = await tracked.id.uuidString
+                            await appLogger.info("failed to delete after pull", error: error, metadata: ["taskID": .string(taskID)])
+                        }
                     }
                 }
-                if case .done = next.state {
-                    do {
-                        // delete from server for privacy
-                        try await client.deleteTask(id: tracked.id)
-                    } catch {
-                        let taskID = await tracked.id.uuidString
-                        await appLogger.info("failed to delete after pull", error: error, metadata: ["taskID": .string(taskID)])
-                    }
+            } catch {
+                await MainActor.run {
+                    tracked._error = error
                 }
-            }
-        } catch {
-            await MainActor.run {
-                tracked._error = error
             }
         }
     }
 }
+
+extension TaskTracker: Equatable {
+    static func == (lhs: borrowing TaskTracker, rhs: borrowing TaskTracker) -> Bool {
+        Unmanaged.passUnretained(lhs).toOpaque() == Unmanaged.passUnretained(rhs).toOpaque()
+    }
+}
+
 
 @MainActor
 fileprivate class TaskTrackerData {
@@ -172,5 +147,15 @@ class TrackedTask {
         _value = value
         self.initialTitle = initialTitle
         self.creation = creation
+    }
+    
+    convenience init(memory: MemoryItem) {
+        let initialState: RlamusTaskState
+        if let summary = memory.summary {
+            initialState = .done(title: memory.title, summary: summary)
+        } else {
+            initialState = .`init`
+        }
+        self.init(value: RlamusTask(id: memory.taskID, url: URL(string: memory.url)!, state: initialState), initialTitle: memory.title, creation: memory.creation)
     }
 }

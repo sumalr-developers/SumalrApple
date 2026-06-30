@@ -1,6 +1,7 @@
 import Common
-import SwiftUI
 import SwiftData
+import SwiftUI
+import Logging
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
@@ -8,18 +9,25 @@ struct ContentView: View {
 
     @State var deepLink: DeepLink? = nil
     @State var selectedTab: Page = .library
-    
+
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab(value: Page.library) {
                 NavigationStack {
                     LibraryPage()
+                        .onChange(of: tasks, { oldValue, newValue in
+                            if newValue == nil {
+                                appLogger.warning("nil tasks")
+                            } else {
+                                appLogger.warning("present tasks")
+                            }
+                        })
                         .navigationTitle("Sumalr")
                         .navigationDestination(item: $deepLink) { dl in
                             switch dl {
-                            case .memory(let taskID):
+                            case let .memory(taskID):
                                 if let memory = try? MemoryItem.fetch(taskID: taskID, modelContext: modelContext) {
-                                    MemoryPage(tasks.tracked(memory: memory))
+                                    MemoryPage(tasks?.tracked(memory: memory) ?? TrackedTask(memory: memory))
                                 } else {
                                     MemoryPage()
                                 }
@@ -48,7 +56,7 @@ struct ContentView: View {
             }
         }
     }
-    
+
     enum Page: Hashable {
         case library
         case account
