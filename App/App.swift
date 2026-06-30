@@ -2,6 +2,7 @@ import AppIntents
 import AsyncAlgorithms
 import Common
 import CoreData
+import CoreSpotlight
 import Foundation
 import Logging
 import SwiftData
@@ -21,15 +22,22 @@ import WebKit
     @State var showWebPreview = false
     @State var taskTracker: TaskTracker? = {
         if let rlamusClient = getRlamusFrom(userDefaults: .appGroup) {
-            TaskTracker(rlamusClient: rlamusClient, modelContext: appModelContainer.mainContext)
+            TaskTracker(rlamusClient: rlamusClient, memoryModelContext: appModelContainer.mainContext, csModelContext: spotlightModelContainer.mainContext)
         } else {
             nil
         }
     }()
+
     @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
 
     init() {
-        MemoryShortcutProvider.updateAppShortcutParameters()
+        Task {
+            do {
+                try await updateCSIndex(appMainIndex, dataModelContext: appModelContainer.mainContext, indexModelContext: spotlightModelContainer.mainContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
+            } catch {
+                appLogger.error("failed to update Spotlight index", error: error)
+            }
+        }
     }
 
     var body: some Scene {
@@ -43,6 +51,7 @@ import WebKit
         .environment(\.getRlamusClient, getRlamusClient)
         .environment(\.deviceToken, appDelegate.deviceToken)
         .environment(\.tasks, taskTracker)
+        .environment(\.csModelContainer, spotlightModelContainer)
         .modelContainer(appModelContainer)
         .onChange(of: scenePhase) { _, newValue in
             Task {
@@ -60,7 +69,7 @@ import WebKit
         }
         .onChange(of: rlamusClient) { _, newValue in
             if let newValue {
-                taskTracker = TaskTracker(rlamusClient: newValue, modelContext: appModelContainer.mainContext)
+                taskTracker = TaskTracker(rlamusClient: newValue, memoryModelContext: appModelContainer.mainContext, csModelContext: spotlightModelContainer.mainContext)
             } else {
                 taskTracker = nil
             }

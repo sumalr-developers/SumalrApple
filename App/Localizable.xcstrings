@@ -31,10 +31,10 @@
     "Library" : {
 
     },
-    "New from URL" : {
+    "Memory" : {
 
     },
-    "Open a memory" : {
+    "New from URL" : {
 
     },
     "Open in browswer" : {
@@ -89,6 +89,9 @@
 
     },
     "Use" : {
+
+    },
+    "Which memory?" : {
 
     }
   },

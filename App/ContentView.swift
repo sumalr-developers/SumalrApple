@@ -2,6 +2,7 @@ import Common
 import SwiftData
 import SwiftUI
 import Logging
+import CoreSpotlight
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
@@ -33,6 +34,9 @@ struct ContentView: View {
                                 }
                             }
                         }
+                        .onAppear {
+                            UNUserNotificationCenter.current().setBadgeCount(0)
+                        }
                 }
             } label: {
                 Button("Library", systemImage: "books.vertical") {
@@ -50,9 +54,13 @@ struct ContentView: View {
             }
         }
         .onOpenURL { url in
-            deepLink = DeepLink(url: url)
-            if case .memory = deepLink {
-                selectedTab = .library
+            handleDeepLink(DeepLink(url: url))
+        }
+        .onContinueUserActivity(CSSearchableItemActionType) { activity in
+            if let urlString = activity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+               let url = URL(string: urlString),
+               let deepLink = DeepLink(url: url) {
+                handleDeepLink(deepLink)
             }
         }
     }
@@ -60,6 +68,16 @@ struct ContentView: View {
     enum Page: Hashable {
         case library
         case account
+    }
+    
+    func handleDeepLink(_ value: DeepLink?) {
+        switch value {
+        case .memory:
+            selectedTab = .library
+        default:
+            break
+        }
+        deepLink = value
     }
 }
 

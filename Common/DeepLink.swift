@@ -2,11 +2,11 @@ import Common
 import Foundation
 import SwiftData
 
-enum DeepLink: Hashable, Equatable {
+public enum DeepLink: Hashable, Equatable {
     case memory(taskID: UUID)
 }
 
-extension DeepLink {
+public extension DeepLink {
     init?(url: URL) {
         guard url.scheme == DEEP_LINK_SCHEME else {
             return nil
@@ -23,10 +23,10 @@ extension DeepLink {
             return nil
         }
     }
-    
+
     var url: URL {
         switch self {
-        case .memory(let taskID):
+        case let .memory(taskID):
             URL(string: "\(DEEP_LINK_SCHEME)://memory/\(taskID.uuidString)")!
         }
     }

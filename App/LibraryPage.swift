@@ -16,6 +16,7 @@ struct LibraryPage: View {
     @Environment(\.horizontalSizeClass) var windowSize
     @Environment(\.showWebPreview) var showWebPreview
     @Environment(\.tasks) var tasks
+    @Environment(\.csModelContainer) var csModelContainer
     #if os(macOS)
         @Environment(\.openWindow) var openWindow
     #endif
@@ -83,14 +84,21 @@ struct LibraryPage: View {
                 }
             }
         }
-        .onChange(of: memories) {
-            MemoryShortcutProvider.updateAppShortcutParameters()
-        }
     }
 
     private func remove(memory: MemoryItem) {
         modelContext.delete(memory)
-        MemoryShortcutProvider.updateAppShortcutParameters()
+        guard let index = try? CSMemory.fetch(byTaskID: memory.taskID, csModelContainer.mainContext) else {
+            return
+        }
+        Task {
+            do {
+                try await appMainIndex.deleteSearchableItems(withIdentifiers: [MemoryEntity(memory).id])
+                csModelContainer.mainContext.delete(index)
+            } catch {
+                appLogger.error("failed to remove from Spotlight index", error: error)
+            }
+        }
     }
 }
 
@@ -99,6 +107,7 @@ struct TaskItemView: View {
     var isLoading: Bool {
         item.summary == nil
     }
+
     var progress: Int {
         switch item.value.state {
         case .`init`:

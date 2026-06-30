@@ -1,4 +1,5 @@
 import Common
+import CoreSpotlight
 import Foundation
 import Logging
 import SwiftData
@@ -6,13 +7,15 @@ import SwiftData
 class TaskTracker {
     private let data = TaskTrackerData()
     let client: RlamusClient
-    let modelContext: ModelContext
+    let memoryModelContext: ModelContext
+    let csModelContext: ModelContext
 
-    init(rlamusClient: RlamusClient, modelContext: ModelContext) {
-        self.client = rlamusClient
-        self.modelContext = modelContext
+    init(rlamusClient: RlamusClient, memoryModelContext: ModelContext, csModelContext: ModelContext) {
+        client = rlamusClient
+        self.memoryModelContext = memoryModelContext
+        self.csModelContext = csModelContext
     }
-    
+
     func tracked(id: UUID, title: String?, creation: Date) async throws (PollTaskError) -> TrackedTask {
         if let task = data.tasks[id] {
             return task
@@ -33,7 +36,7 @@ class TaskTracker {
         if case .done = task.value.state {
             return task
         }
-        
+
         data.insertTask(task, id: memory.taskID, job: createUpdatingJob(for: task))
         return task
     }
@@ -50,28 +53,43 @@ class TaskTracker {
         }
     }
     
-    func createUpdatingJob(for tracked: TrackedTask) -> Task<Void, Never> {
+    private func fetchMemory(_ taskID: UUID) throws -> MemoryItem? {
+        try MemoryItem.fetch(taskID: taskID, modelContext: memoryModelContext)
+    }
+
+    private func createUpdatingJob(for tracked: TrackedTask) -> Task<Void, Never> {
         return Task.detached { [self] in
             var stream = client.streamTask(id: await tracked.value.id).makeAsyncIterator()
             do {
                 while let next = try await stream.next() {
                     await MainActor.run {
                         tracked._value = next
-                        if let memory = try? MemoryItem.fetch(taskID: tracked.value.id, modelContext: modelContext) {
+                        if let memory = try? fetchMemory(tracked.id) {
                             memory.summary = next.summary
                             if let title = next.title {
                                 memory.title = title
                             }
-                            try? modelContext.save()
+                            try? memoryModelContext.save()
                         }
                     }
-                    if case .done = next.state {
+                    if case let .done(title, summary) = next.state {
                         do {
                             // delete from server for privacy
                             try await client.deleteTask(id: tracked.id)
                         } catch {
                             let taskID = await tracked.id.uuidString
                             await appLogger.info("failed to delete after pull", error: error, metadata: ["taskID": .string(taskID)])
+                        }
+
+                        Task { @MainActor in
+                            if let memory = try? fetchMemory(tracked.id) {
+                                do {
+                                    try await appMainIndex.indexSearchableItems([CSSearchableItem(memory: memory)])
+                                    self.csModelContext.insert(CSMemory(id: tracked.id, indexed: true))
+                                } catch {
+                                    appLogger.error("failed to insert Spotlight index", error: error, metadata: ["taskID": .stringConvertible(tracked.id), "title": .string(title ?? "nil")])
+                                }
+                            }
                         }
                     }
                 }
@@ -90,12 +108,11 @@ extension TaskTracker: Equatable {
     }
 }
 
-
 @MainActor
 fileprivate class TaskTrackerData {
     var tasks = [UUID: TrackedTask]()
     var jobs = [UUID: Task<Void, Never>]()
-    
+
     deinit {
         for job in jobs.values {
             job.cancel()
@@ -148,7 +165,7 @@ class TrackedTask {
         self.initialTitle = initialTitle
         self.creation = creation
     }
-    
+
     convenience init(memory: MemoryItem) {
         let initialState: RlamusTaskState
         if let summary = memory.summary {

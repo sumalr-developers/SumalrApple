@@ -7,19 +7,20 @@ import SwiftData
     import AppKit
 #endif
 
-@AppIntent(schema: .system.open)
 struct OpenMemoryIntent: OpenIntent {
+    static let title: LocalizedStringResource = "Open memory"
+    @Parameter(title: "Memory", requestValueDialog: "Which memory?")
     var target: MemoryEntity
+
     static let openAppWhenRun: Bool = true
     static let isDiscoverable: Bool = true
-    static let title: LocalizedStringResource = "Open memory"
 
     @MainActor
     func perform() async throws -> some IntentResult {
         #if os(iOS)
-            await UIApplication.shared.open(DeepLink.memory(taskID: target.id).url)
+            await UIApplication.shared.open(URL(string: target.id)!)
         #elseif os(macOS)
-            NSWorkspace.shared.open(DeepLink.memory(taskID: target.id).url)
+            NSWorkspace.shared.open(URL(string: target.id)!)
         #endif
         return .result()
     }
