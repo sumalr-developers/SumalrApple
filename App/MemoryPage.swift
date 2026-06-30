@@ -5,6 +5,7 @@ import Textual
 
 struct MemoryPage: View {
     @Environment(\.openURL) var openURL
+    @State var summary: String = ""
     
     let item: TrackedTask?
     init(_ item: TrackedTask? = nil) {
@@ -15,10 +16,8 @@ struct MemoryPage: View {
         if let item {
             ScrollView(.vertical) {
                 VStack {
-                    if let summary = item.value.summary {
-                        StructuredText(markdown: summary)
-                            .textual.textSelection(.enabled)
-                    }
+                    StructuredText(markdown: summary)
+                        .textual.textSelection(.enabled)
                     Text("Created \(Text(item.creation, style: .relative)) ago")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -26,6 +25,16 @@ struct MemoryPage: View {
                         .safeAreaPadding(.bottom)
                 }
                 .padding(.horizontal)
+                .onAppear {
+                    if let summary = item.value.summary {
+                        self.summary = summary
+                    }
+                }
+                .onChange(of: item.value) { oldValue, newValue in
+                    if let summary = newValue.summary {
+                        self.summary = summary
+                    }
+                }
             }
             .navigationTitle(item.title ?? String(localized: "Unnamed memory"))
             #if os(iOS)
