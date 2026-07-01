@@ -48,7 +48,11 @@ struct SearchPage: View {
         .onAppear {
             CSUserQuery.prepare()
         }
+        #if os(iOS)
         .searchable(text: $buffer, placement: .navigationBarDrawer, prompt: "Find a memory...")
+        #else
+        .searchable(text: $buffer, prompt: "Find a memory...")
+        #endif
         .searchSuggestions {
             ForEach(suggestions) { suggestion in
                 let title = String(suggestion.suggestion.localizedAttributedSuggestion.characters)

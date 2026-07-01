@@ -3,6 +3,7 @@ import CoreSpotlight
 import Logging
 import SwiftData
 import SwiftUI
+import UserNotifications
 internal import Combine
 
 struct ContentView: View {
