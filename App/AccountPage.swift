@@ -9,7 +9,6 @@ struct AccountPage: View {
             SetupPage.BackendSection()
         }
         .formStyle(.grouped)
-        .padding()
     }
 }
 
