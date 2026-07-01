@@ -88,13 +88,9 @@ struct LibraryPage: View {
 
     private func remove(memory: MemoryItem) {
         modelContext.delete(memory)
-        guard let index = try? CSMemory.fetch(byTaskID: memory.taskID, csModelContainer.mainContext) else {
-            return
-        }
         Task {
             do {
                 try await appMainIndex.deleteSearchableItems(withIdentifiers: [MemoryEntity(memory).id])
-                csModelContainer.mainContext.delete(index)
             } catch {
                 appLogger.error("failed to remove from Spotlight index", error: error)
             }

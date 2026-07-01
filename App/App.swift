@@ -22,7 +22,7 @@ import WebKit
     @State var showWebPreview = false
     @State var taskTracker: TaskTracker? = {
         if let rlamusClient = getRlamusFrom(userDefaults: .appGroup) {
-            TaskTracker(rlamusClient: rlamusClient, memoryModelContext: appModelContainer.mainContext, csModelContext: spotlightModelContainer.mainContext)
+            TaskTracker(rlamusClient: rlamusClient, memoryModelContext: appModelContainer.mainContext, csModelContext: spotlightModelContainer.mainContext, csIndex: appMainIndex)
         } else {
             nil
         }
@@ -33,7 +33,12 @@ import WebKit
     init() {
         Task {
             do {
-                try await updateCSIndex(appMainIndex, dataModelContext: appModelContainer.mainContext, indexModelContext: spotlightModelContainer.mainContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
+                guard let indexUpuntil = try await updateCSIndex(appMainIndex, dataModelContext: appModelContainer.mainContext, indexModelContext: spotlightModelContainer.mainContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
+                else {
+                    return
+                }
+                
+                try appModelContainer.mainContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token <= indexUpuntil }))
             } catch {
                 appLogger.error("failed to update Spotlight index", error: error)
             }
@@ -69,7 +74,7 @@ import WebKit
         }
         .onChange(of: rlamusClient) { _, newValue in
             if let newValue {
-                taskTracker = TaskTracker(rlamusClient: newValue, memoryModelContext: appModelContainer.mainContext, csModelContext: spotlightModelContainer.mainContext)
+                taskTracker = TaskTracker(rlamusClient: newValue, memoryModelContext: appModelContainer.mainContext, csModelContext: spotlightModelContainer.mainContext, csIndex: appMainIndex)
             } else {
                 taskTracker = nil
             }

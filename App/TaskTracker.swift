@@ -9,11 +9,13 @@ class TaskTracker {
     let client: RlamusClient
     let memoryModelContext: ModelContext
     let csModelContext: ModelContext
+    let csIndex: CSSearchableIndex
 
-    init(rlamusClient: RlamusClient, memoryModelContext: ModelContext, csModelContext: ModelContext) {
+    init(rlamusClient: RlamusClient, memoryModelContext: ModelContext, csModelContext: ModelContext, csIndex: CSSearchableIndex) {
         client = rlamusClient
         self.memoryModelContext = memoryModelContext
         self.csModelContext = csModelContext
+        self.csIndex = csIndex
     }
 
     func tracked(id: UUID, title: String?, creation: Date) async throws (PollTaskError) -> TrackedTask {
@@ -52,7 +54,7 @@ class TaskTracker {
             data.updateJob(for: id, newValue: createUpdatingJob(for: task))
         }
     }
-    
+
     private func fetchMemory(_ taskID: UUID) throws -> MemoryItem? {
         try MemoryItem.fetch(taskID: taskID, modelContext: memoryModelContext)
     }
@@ -72,7 +74,7 @@ class TaskTracker {
                             try? memoryModelContext.save()
                         }
                     }
-                    if case let .done(title, summary) = next.state {
+                    if case .done = next.state {
                         do {
                             // delete from server for privacy
                             try await client.deleteTask(id: tracked.id)
@@ -82,13 +84,14 @@ class TaskTracker {
                         }
 
                         Task { @MainActor in
-                            if let memory = try? fetchMemory(tracked.id) {
-                                do {
-                                    try await appMainIndex.indexSearchableItems([CSSearchableItem(memory: memory)])
-                                    self.csModelContext.insert(CSMemory(id: tracked.id, indexed: true))
-                                } catch {
-                                    appLogger.error("failed to insert Spotlight index", error: error, metadata: ["taskID": .stringConvertible(tracked.id), "title": .string(title ?? "nil")])
+                            do {
+                                guard let indexUpuntil = try await updateCSIndex(self.csIndex, dataModelContext: self.memoryModelContext, indexModelContext: self.csModelContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
+                                else {
+                                    return
                                 }
+                                try memoryModelContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token <= indexUpuntil }))
+                            } catch {
+                                appLogger.error("failed to update CS index", error: error, function: "createUpdatingJob")
                             }
                         }
                     }
