@@ -22,6 +22,7 @@ struct LibraryPage: View {
     #endif
 
     @Query(sort: [SortDescriptor<MemoryItem>(\.creation, order: .reverse)], animation: .default) var memories: [MemoryItem]
+    @Binding var scrollPosition: ScrollPosition
 
     var columns: [GridItem] {
         let columns: Int
@@ -73,10 +74,12 @@ struct LibraryPage: View {
                     #endif
                 }
             }
+            .scrollTargetLayout()
             .animation(.default, value: memories)
             .swipeActionsContainer()
             .padding()
         }
+        .scrollPosition($scrollPosition)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Add", systemImage: "plus") {

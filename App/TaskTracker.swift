@@ -133,7 +133,7 @@ fileprivate class TaskTrackerData {
 }
 
 @Observable
-class TrackedTask {
+class TrackedTask: Identifiable {
     fileprivate var _value: RlamusTask
     fileprivate var _error: (any Error)?
     let initialTitle: String?

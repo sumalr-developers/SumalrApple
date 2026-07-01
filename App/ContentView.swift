@@ -1,8 +1,9 @@
 import Common
+import CoreSpotlight
+import Logging
 import SwiftData
 import SwiftUI
-import Logging
-import CoreSpotlight
+internal import Combine
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
@@ -10,13 +11,14 @@ struct ContentView: View {
 
     @State var deepLink: DeepLink? = nil
     @State var selectedTab: Page = .library
+    @State var libararyScrollPosition: ScrollPosition = .init()
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Tab(value: Page.library) {
+            Tab("Library", systemImage: "books.vertical", value: Page.library) {
                 NavigationStack {
-                    LibraryPage()
-                        .onChange(of: tasks, { oldValue, newValue in
+                    LibraryPage(scrollPosition: $libararyScrollPosition)
+                        .onChange(of: tasks, { _, newValue in
                             if newValue == nil {
                                 appLogger.warning("nil tasks")
                             } else {
@@ -38,21 +40,23 @@ struct ContentView: View {
                             UNUserNotificationCenter.current().setBadgeCount(0)
                         }
                 }
-            } label: {
-                Button("Library", systemImage: "books.vertical") {
-                }
             }
 
-            Tab(value: Page.account) {
+            Tab("Account", systemImage: "person.circle", value: Page.account) {
                 NavigationStack {
                     AccountPage()
                         .navigationTitle("Sumalr")
                 }
-            } label: {
-                Button("Account", systemImage: "person.circle") {
+            }
+
+            Tab(value: Page.search, role: .search) {
+                NavigationStack {
+                    SearchPage()
+                        .navigationTitle("Sumalr")
                 }
             }
         }
+        .tabViewSearchActivation(.searchTabSelection)
         .onOpenURL { url in
             handleDeepLink(DeepLink(url: url))
         }
@@ -68,16 +72,25 @@ struct ContentView: View {
     enum Page: Hashable {
         case library
         case account
+        case search
     }
-    
+
     func handleDeepLink(_ value: DeepLink?) {
+        let wait: DispatchTimeInterval = selectedTab == .library ? .never : .seconds(1)
         switch value {
-        case .memory:
+        case let .memory(taskID):
+            if let memory = try? MemoryItem.fetch(taskID: taskID, modelContext: modelContext) {
+                withAnimation {
+                    libararyScrollPosition.scrollTo(id: memory.id)
+                }
+            }
             selectedTab = .library
         default:
             break
         }
-        deepLink = value
+        DispatchQueue.main.schedule(after: .init(.now().advanced(by: wait))) {
+            deepLink = value
+        }
     }
 }
 
