@@ -77,7 +77,7 @@ struct ContentView: View {
     }
 
     func handleDeepLink(_ value: DeepLink?) {
-        let wait: DispatchTimeInterval = selectedTab == .library ? .never : .seconds(1)
+        let wait: DispatchTimeInterval = selectedTab == .library ? .seconds(0) : .seconds(1)
         switch value {
         case let .memory(taskID):
             if let memory = try? MemoryItem.fetch(taskID: taskID, modelContext: modelContext) {
