@@ -45,6 +45,10 @@ async throws -> DefaultHistoryToken?
         historyFetcher = .init()
     }
     let transactions = try dataModelContext.fetchHistory(historyFetcher)
+    guard let lastTransaction = transactions.last else {
+        return nil
+    }
+        
     var toBeIndexed = Set<PersistentIdentifier>()
     var toBeRemoved = Set<PersistentIdentifier>()
     for transaction in transactions {
@@ -69,16 +73,14 @@ async throws -> DefaultHistoryToken?
         }
     }
 
-    let modelsToBeIndexed = try dataModelContext.fetch(FetchDescriptor<Index.Data>(predicate: #Predicate { toBeIndexed.contains($0.id) }))
-    let modelsToBeRemoved = try dataModelContext.fetch(FetchDescriptor<Index.Data>(predicate: #Predicate { toBeRemoved.contains($0.id) }))
+    let models = try dataModelContext.fetch(FetchDescriptor<Index.Data>())
+    let modelsToBeIndexed = models.filter { toBeIndexed.contains($0.id) }
+    let modelsToBeRemoved = models.filter { toBeRemoved.contains($0.id) }
     csIndex.beginBatch()
     try await csIndex.indexSearchableItems(modelsToBeIndexed.map { $0.searchableItem })
     try await csIndex.deleteSearchableItems(withIdentifiers: modelsToBeRemoved.map { $0.searchableItem.uniqueIdentifier })
     try await csIndex.endBatch(withClientState: .init())
 
-    guard let lastTransaction = transactions.last else {
-        return nil
-    }
     if let latestIndex {
         indexModelContext.delete(latestIndex)
     }
