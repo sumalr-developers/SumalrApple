@@ -30,17 +30,20 @@ class TaskTracker {
     }
 
     func tracked(memory: MemoryItem) -> TrackedTask {
+        let derivedTask = TrackedTask(memory: memory)
         if let task = data.tasks[memory.taskID] {
+            if case .done = derivedTask.value.state {
+                task._value = derivedTask.value
+            }
             return task
         }
 
-        let task = TrackedTask(memory: memory)
-        if case .done = task.value.state {
-            return task
+        if case .done = derivedTask.value.state {
+            return derivedTask
         }
 
-        data.insertTask(task, id: memory.taskID, job: createUpdatingJob(for: task))
-        return task
+        data.insertTask(derivedTask, id: memory.taskID, job: createUpdatingJob(for: derivedTask))
+        return derivedTask
     }
 
     func pauseAll() async {
