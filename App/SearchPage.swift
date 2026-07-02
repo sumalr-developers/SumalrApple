@@ -60,6 +60,18 @@ struct SearchPage: View {
                     .searchCompletion(title)
             }
         }
+        .task {
+            do {
+                guard let indexUpuntil = try await updateCSIndex(appMainIndex, dataModelContext: appModelContainer.mainContext, indexModelContext: spotlightModelContainer.mainContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
+                else {
+                    return
+                }
+                
+                try appModelContainer.mainContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token < indexUpuntil }))
+            } catch {
+                appLogger.error("failed to update Spotlight index", error: error)
+            }
+        }
         .task(id: buffer) {
             do {
                 try await Task.sleep(for: .seconds(0.3))
