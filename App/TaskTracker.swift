@@ -89,11 +89,13 @@ class TaskTracker {
                                 else {
                                     return
                                 }
-                                try memoryModelContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token <= indexUpuntil }))
+                                try memoryModelContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token < indexUpuntil }))
                             } catch {
                                 appLogger.error("failed to update CS index", error: error, function: "createUpdatingJob")
                             }
                         }
+                        
+                        break
                     }
                 }
             } catch {

@@ -38,7 +38,7 @@ import WebKit
                     return
                 }
                 
-                try appModelContainer.mainContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token <= indexUpuntil }))
+                try appModelContainer.mainContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token < indexUpuntil }))
             } catch {
                 appLogger.error("failed to update Spotlight index", error: error)
             }
