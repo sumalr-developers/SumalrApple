@@ -61,6 +61,7 @@ struct ContentView: View {
         .onOpenURL { url in
             handleDeepLink(DeepLink(url: url))
         }
+        .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
         .onContinueUserActivity(CSSearchableItemActionType) { activity in
             if let urlString = activity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
                let url = URL(string: urlString),

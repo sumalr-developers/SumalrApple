@@ -37,6 +37,12 @@ public struct ShareSheetView: View {
                     CompletedView()
                 }
             }
+            .alert(error: $error) {
+                Button("Cancel", role: .cancel) {
+                    error = nil
+                    dismiss()
+                }
+            }
         #else
             NavigationStack {
                 Group {
@@ -54,11 +60,11 @@ public struct ShareSheetView: View {
                         }
                     }
                 }
-                .alert(error: $error) {
-                    Button("Cancel", role: .cancel) {
-                        error = nil
-                        dismiss()
-                    }
+            }
+            .alert(error: $error) {
+                Button("Cancel", role: .cancel) {
+                    error = nil
+                    dismiss()
                 }
             }
         #endif
@@ -76,10 +82,10 @@ public struct ShareSheetView: View {
                     let deviceInfo: NotificationRegistration? =
                         if let token = getDeviceToken(from: .appGroup),
                         let topic = Bundle.main.bundleIdentifier {
-                            NotificationRegistration(deviceToken: token, topic: String(topic[topic.startIndex..<topic.lastIndex(of: ".")!]))
-                        } else {
-                            nil
-                        }
+                        NotificationRegistration(deviceToken: token, topic: String(topic[topic.startIndex ..< topic.lastIndex(of: ".")!]))
+                    } else {
+                        nil
+                    }
                     for item in sharedItems {
                         let url = try await item.loadObject(ofType: URL.self)
                         async let itemTask = try addMemory(url: url, client: rlamusClient, registerForNotifications: deviceInfo)

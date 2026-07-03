@@ -20,7 +20,7 @@ class ShareViewController: NSViewController {
 
         let attachments = extensionContext?.inputItems.flatMap { ($0 as! NSExtensionItem).attachments ?? [] } ?? []
         let hostingController = NSHostingController(rootView:
-            ShareSheetView(attachments)
+            ShareSheetView(attachments.filter { $0.canLoadObject(ofClass: URL.self) })
                 .environment(\.dismissSharesheet, dismiss)
                 .modelContainer(appModelContainer)
         )
