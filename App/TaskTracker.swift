@@ -78,14 +78,6 @@ class TaskTracker {
                         }
                     }
                     if case .done = next.state {
-                        do {
-                            // delete from server for privacy
-                            try await client.deleteTask(id: tracked.id)
-                        } catch {
-                            let taskID = await tracked.id.uuidString
-                            await appLogger.info("failed to delete after pull", error: error, metadata: ["taskID": .string(taskID)])
-                        }
-
                         Task { @MainActor in
                             do {
                                 guard let indexUpuntil = try await updateCSIndex(self.csIndex, dataModelContext: self.memoryModelContext, indexModelContext: self.csModelContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
