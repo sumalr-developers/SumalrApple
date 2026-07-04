@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 import SwiftUI
+internal import UniformTypeIdentifiers
 
 public struct ShareSheetView: View {
     @Environment(\.dismissSharesheet) var dismiss
@@ -29,7 +30,7 @@ public struct ShareSheetView: View {
                     HStack {
                         Spacer()
                         Button("Cancel") {
-                            dismiss()
+                            dismiss(.canceled(CancellationError()))
                         }
                     }
                     .padding()
@@ -39,8 +40,11 @@ public struct ShareSheetView: View {
             }
             .alert(error: $error) {
                 Button("Cancel", role: .cancel) {
-                    error = nil
-                    dismiss()
+                    if let error {
+                        dismiss(.canceled(error))
+                    } else {
+                        dismiss(.ok)
+                    }
                 }
             }
         #else
@@ -56,15 +60,18 @@ public struct ShareSheetView: View {
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Close", systemImage: "xmark") {
-                            dismiss()
+                            dismiss(.canceled(CancellationError()))
                         }
                     }
                 }
             }
             .alert(error: $error) {
                 Button("Cancel", role: .cancel) {
-                    error = nil
-                    dismiss()
+                    if let error {
+                        dismiss(.canceled(error))
+                    } else {
+                        dismiss(.ok)
+                    }
                 }
             }
         #endif
@@ -87,7 +94,7 @@ public struct ShareSheetView: View {
                         nil
                     }
                     for item in sharedItems {
-                        let url = try await item.loadObject(ofType: URL.self)
+                        let url = try await loadAsURL(item)
                         async let itemTask = try addMemory(url: url, client: rlamusClient, registerForNotifications: deviceInfo)
                         async let titleTask = try? getWebPageTitle(url: url)
                         let (item, title) = try await (itemTask, titleTask)
@@ -114,13 +121,69 @@ public struct ShareSheetView: View {
     }
 }
 
+func loadAsURL(_ item: NSItemProvider) async throws -> URL {
+    if let url = try? await item.loadObject(ofClass: NSURL.self) as URL? {
+        return url
+    }
+
+    if item.registeredContentTypes.contains(.plainText) {
+        if let data = try? await item.loadDataRepresentation(for: .plainText),
+           let str = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSString.self, from: data),
+           let url = URL(string: str as String) {
+            return url
+        }
+    }
+
+    throw UnsupportedShareTypeError()
+}
+
+extension NSString: @unchecked @retroactive Sendable {}
+
+extension NSItemProvider {
+    func loadObject<T>(ofClass: T.Type) async throws -> T
+        where T: NSItemProviderReading & Sendable {
+        try await withCheckedThrowingContinuation { continutation in
+            self.loadObject(ofClass: ofClass as NSItemProviderReading.Type) { value, error in
+                if let error {
+                    continutation.resume(throwing: error)
+                } else {
+                    continutation.resume(returning: value! as! T)
+                }
+            }
+        }
+    }
+
+    func loadDataRepresentation(for type: UTType) async throws -> Data {
+        try await withCheckedThrowingContinuation { continuation in
+            _ = self.loadDataRepresentation(for: type) { value, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: value!)
+                }
+            }
+        }
+    }
+}
+
+struct UnsupportedShareTypeError: Error, LocalizedError {
+    var errorDescription: String? {
+        String(localized: "This type of shared item is not supported")
+    }
+}
+
 enum ShareState {
     case creating
     case completed
 }
 
+public enum SharesheetDismissal {
+    case ok
+    case canceled(any Error)
+}
+
 extension EnvironmentValues {
-    @Entry public var dismissSharesheet: () -> Void = {}
+    @Entry public var dismissSharesheet: (_ dismissal: SharesheetDismissal) -> Void = { _ in }
 }
 
 fileprivate struct FullWidthButton<Label: View>: View {
@@ -188,12 +251,12 @@ fileprivate struct CompletedView: View {
             .padding(.horizontal)
             Spacer()
             FullWidthButton {
-                dismiss()
+                dismiss(.ok)
             } label: {
                 Text("Closing in \(Text(timerInterval: Date.now ... Date(timeInterval: 10, since: .now)))")
                     .task {
                         try? await Task.sleep(for: .seconds(10))
-                        dismiss()
+                        dismiss(.ok)
                     }
             }
             .tint(.clear)

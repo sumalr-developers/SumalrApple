@@ -32,7 +32,12 @@ class ShareViewController: UIViewController {
         hostingController.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
     }
 
-    func dismiss() {
-        extensionContext?.completeRequest(returningItems: nil)
+    func dismiss(_ dismissal: SharesheetDismissal) {
+        switch dismissal {
+        case .ok:
+            extensionContext!.completeRequest(returningItems: nil)
+        case .canceled(let error):
+            extensionContext!.cancelRequest(withError: error)
+        }
     }
 }

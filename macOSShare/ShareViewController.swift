@@ -20,7 +20,7 @@ class ShareViewController: NSViewController {
 
         let attachments = extensionContext?.inputItems.flatMap { ($0 as! NSExtensionItem).attachments ?? [] } ?? []
         let hostingController = NSHostingController(rootView:
-            ShareSheetView(attachments.filter { $0.canLoadObject(ofClass: URL.self) })
+            ShareSheetView(attachments)
                 .environment(\.dismissSharesheet, dismiss)
                 .modelContainer(appModelContainer)
         )
@@ -36,7 +36,12 @@ class ShareViewController: NSViewController {
         hostingController.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
     }
 
-    func dismiss() {
-        extensionContext!.completeRequest(returningItems: nil)
+    func dismiss(_ dismissal: SharesheetDismissal) {
+        switch dismissal {
+        case .ok:
+            extensionContext!.completeRequest(returningItems: nil)
+        case .canceled(let error):
+            extensionContext!.cancelRequest(withError: error)
+        }
     }
 }

@@ -59,8 +59,8 @@
       queueDebuggingEnabled = "No">
       <RemoteRunnable
          runnableDebuggingMode = "0"
-         BundleIdentifier = "com.apple.mobilesafari"
-         RemotePath = "/var/containers/Bundle/Application/C5F24CFD-95BF-4F72-940E-7BBEA2FDC150/MobileSafari.app">
+         BundleIdentifier = "com.google.ios.youtube"
+         RemotePath = "/var/containers/Bundle/Application/7BEA2B7D-9CE8-45DF-BCD7-9392D97780F4/YouTube.app">
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference
