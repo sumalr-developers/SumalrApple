@@ -38,12 +38,19 @@ class TaskTracker {
             return task
         }
 
-        if case .done = derivedTask.value.state {
+        if !memory.stale, case .done = derivedTask.value.state {
             return derivedTask
         }
 
         data.insertTask(derivedTask, id: memory.taskID, job: createUpdatingJob(for: derivedTask))
         return derivedTask
+    }
+    
+    func reset(tracked: TrackedTask) async throws(PollTaskError) {
+        if let job = data.jobs[tracked.value.id] {
+            job.cancel()
+        }
+        data.updateJob(for: tracked.value.id, newValue: createUpdatingJob(for: tracked))
     }
 
     func pauseAll() async {
@@ -80,11 +87,7 @@ class TaskTracker {
                     if case .done = next.state {
                         Task { @MainActor in
                             do {
-                                guard let indexUpuntil = try await updateCSIndex(self.csIndex, dataModelContext: self.memoryModelContext, indexModelContext: self.csModelContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
-                                else {
-                                    return
-                                }
-                                try memoryModelContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token < indexUpuntil }))
+                                 _ = try await updateCSIndex(self.csIndex, dataModelContext: self.memoryModelContext, indexModelContext: self.csModelContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
                             } catch {
                                 appLogger.error("failed to update CS index", error: error, function: "createUpdatingJob")
                             }
@@ -159,6 +162,23 @@ class TrackedTask: Identifiable {
     var url: URL {
         _value.url
     }
+    
+    var progress: Float {
+        let currentStep = switch value.state {
+        case .`init`:
+            0
+        case .scraping:
+            1
+        case .summarizing:
+            2
+        case .done:
+            3
+        case .failed:
+            3
+        }
+        return Float(currentStep) / 3
+    }
+
 
     init(value: RlamusTask, initialTitle: String? = nil, creation: Date) {
         _value = value

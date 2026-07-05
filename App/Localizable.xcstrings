@@ -10,6 +10,9 @@
     "Close" : {
 
     },
+    "Continue" : {
+
+    },
     "Could not parse the address of your input" : {
 
     },
@@ -17,6 +20,9 @@
 
     },
     "Delete" : {
+
+    },
+    "Discard the current summary and try again?" : {
 
     },
     "Enter website address" : {
@@ -60,6 +66,15 @@
         }
       }
     },
+    "Refresh Summarization" : {
+
+    },
+    "Removed from server" : {
+
+    },
+    "Retry" : {
+
+    },
     "Specified memory couldn't be found" : {
 
     },
@@ -87,6 +102,9 @@
           }
         }
       }
+    },
+    "This memory has been deleted from the remote server, therehence impossible to retry in place. You can remove it and create a new one manually" : {
+
     },
     "Unnamed memory" : {
 

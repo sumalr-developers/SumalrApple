@@ -45,11 +45,7 @@ public struct RlamusClient: Sendable, Equatable {
 
         let (data, res): (Data, HTTPResponse)
         do {
-            var payload = "url=\(url.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
-            if let apnInfo {
-                payload += "&apn_device_token=\(apnInfo.deviceToken.map { String(format: "%02hhx", $0) }.joined())"
-                payload += "&apn_topic=\(apnInfo.topic.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
-            }
+            let payload = getCreateTaskPayload(url: url, apnInfo: apnInfo)
             (data, res) = try await urlSession.upload(for: request, from: payload.data(using: .utf8)!)
         } catch {
             throw .io(error)
@@ -64,6 +60,35 @@ public struct RlamusClient: Sendable, Equatable {
             throw .invalidResponse
         }
         return uuid
+    }
+
+    public func patchTask(id: UUID, url: String? = nil, registerForNotifications apnInfo: NotificationRegistration? = nil) async throws(PatchTaskError) {
+        var request = HTTPRequest(method: .patch, url: endpoint.appending(components: "task", id.uuidString))
+        let emptyRequest = url == nil && apnInfo == nil
+        request.headerFields[.contentType] = if emptyRequest {
+            "application/json"
+        } else {
+            "application/x-www-form-urlencoded"
+        }
+        let (data, res): (Data, HTTPResponse)
+        do {
+            if emptyRequest {
+                (data, res) = try await urlSession.upload(for: request, from: "{}".data(using: .utf8)!)
+            } else {
+                let payload = getCreateTaskPayload(url: url, apnInfo: apnInfo)
+                (data, res) = try await urlSession.upload(for: request, from: "{}".data(using: .utf8)!)
+            }
+        } catch {
+            throw .io(error)
+        }
+        
+        if res.status != .accepted {
+            if res.status == .notFound {
+                throw .notFound
+            }
+            
+            throw .unexpectedStatus(res.status)
+        }
     }
 
     public func pollTask(id: UUID) async throws (PollTaskError) -> RlamusTask {
@@ -136,10 +161,22 @@ public struct RlamusClient: Sendable, Equatable {
     }
 }
 
+func getCreateTaskPayload(url: String? = nil, apnInfo: NotificationRegistration? = nil) -> String {
+    var payload = ""
+    if let url {
+        payload += "url=\(url.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+    }
+    if let apnInfo {
+        payload += "&apn_device_token=\(apnInfo.deviceToken.map { String(format: "%02hhx", $0) }.joined())"
+        payload += "&apn_topic=\(apnInfo.topic.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)"
+    }
+    return payload
+}
+
 public struct NotificationRegistration: Sendable {
     let deviceToken: Data
     let topic: String
-    
+
     public init(deviceToken: Data, topic: String) {
         self.deviceToken = deviceToken
         self.topic = topic
@@ -157,6 +194,12 @@ public enum CreateTaskError: Error {
     case io(any Error)
     case unexpectedStatus(HTTPResponse.Status)
     case invalidResponse
+}
+
+public enum PatchTaskError: Error {
+    case io(any Error)
+    case notFound
+    case unexpectedStatus(HTTPResponse.Status)
 }
 
 public enum PollTaskError: Error {

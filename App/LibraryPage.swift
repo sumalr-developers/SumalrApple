@@ -107,21 +107,6 @@ struct TaskItemView: View {
         item.summary == nil
     }
 
-    var progress: Int {
-        switch item.value.state {
-        case .`init`:
-            0
-        case .scraping:
-            1
-        case .summarizing:
-            2
-        case .done:
-            3
-        case .failed:
-            3
-        }
-    }
-
     init(_ item: TrackedTask) {
         self.item = item
     }
@@ -129,9 +114,9 @@ struct TaskItemView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if isLoading {
-                ProgressView(value: Float(progress), total: 3)
+                ProgressView(value: Float(item.progress), total: 3)
                     .frame(maxWidth: .infinity)
-                    .animation(.default, value: progress)
+                    .animation(.default, value: isLoading)
             }
             if let title = item.title {
                 Text(title)

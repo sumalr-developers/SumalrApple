@@ -8,5 +8,7 @@
 	<string>$(APP_GROUP_ID)</string>
 	<key>DEEP_LINK_SCHEME</key>
 	<string>$(DEEP_LINK_SCHEME)</string>
+	<key>ICLOUD_CONTAINER_ID</key>
+	<string>$(ICLOUD_CONTAINER_ID)</string>
 </dict>
 </plist>

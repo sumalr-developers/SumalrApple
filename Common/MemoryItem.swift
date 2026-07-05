@@ -9,6 +9,8 @@ public final class MemoryItem: CSIndexable {
     public var summary: String?
     public var taskID: UUID = UUID()
     public var creation: Date = Date.distantFuture
+    /// Force fetch from remote server
+    public var stale: Bool = false
 
     /// Associate with [CSMemory]
     public var csIndexID: UUID { taskID }

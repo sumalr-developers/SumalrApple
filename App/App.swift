@@ -20,24 +20,56 @@ import WebKit
     @State var setupRlamus = AsyncChannel<RlamusClient>()
     @State var showSetupSheet = false
     @State var showWebPreview = false
-    @State var taskTracker: TaskTracker? = {
-        if let rlamusClient = getRlamusFrom(userDefaults: .appGroup) {
+    @State var taskTracker: TaskTracker?
+    @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
+
+    init() {
+        #if DEBUG
+            do {
+                // Use an autorelease pool to make sure Swift deallocates the persistent
+                // container before setting up the SwiftData stack.
+                try autoreleasepool {
+                    let desc = NSPersistentStoreDescription(url: FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: APP_GROUP_ID)!.appending(components: "Library", "Application Support", "default.store"))
+                    let opts = NSPersistentCloudKitContainerOptions(containerIdentifier: ICLOUD_CONTAINER_ID)
+                    desc.cloudKitContainerOptions = opts
+                    // Load the store synchronously so it completes before initializing the
+                    // CloudKit schema.
+                    desc.shouldAddStoreAsynchronously = false
+                    if let mom = NSManagedObjectModel.makeManagedObjectModel(for: [MemoryItem.self]) {
+                        let container = NSPersistentCloudKitContainer(name: "MemoryItem", managedObjectModel: mom)
+                        container.persistentStoreDescriptions = [desc]
+                        container.loadPersistentStores { _, err in
+                            if let err {
+                                fatalError(err.localizedDescription)
+                            }
+                        }
+                        // Initialize the CloudKit schema after the store finishes loading.
+                        try container.initializeCloudKitSchema()
+                        // Remove and unload the store from the persistent container.
+                        if let store = container.persistentStoreCoordinator.persistentStores.first {
+                            try container.persistentStoreCoordinator.remove(store)
+                        }
+                    }
+                }
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        #endif
+
+        let tracker: TaskTracker? = if let rlamusClient = getRlamusFrom(userDefaults: .appGroup) {
             TaskTracker(rlamusClient: rlamusClient, memoryModelContext: appModelContainer.mainContext, csModelContext: spotlightModelContainer.mainContext, csIndex: appMainIndex)
         } else {
             nil
         }
-    }()
+        _taskTracker = State(initialValue: tracker)
 
-    @State var rlamusClient: RlamusClient? = getRlamusFrom(userDefaults: .appGroup)
-
-    init() {
         Task {
             do {
                 guard let indexUpuntil = try await updateCSIndex(appMainIndex, dataModelContext: appModelContainer.mainContext, indexModelContext: spotlightModelContainer.mainContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
                 else {
                     return
                 }
-                
+
                 try appModelContainer.mainContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token < indexUpuntil }))
             } catch {
                 appLogger.error("failed to update Spotlight index", error: error)
