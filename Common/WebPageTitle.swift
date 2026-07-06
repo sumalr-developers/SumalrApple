@@ -1,8 +1,14 @@
 import Foundation
 import WebKit
 
+public struct GetWebPageTitleTimeoutError: Error, LocalizedError {
+    public var errorDescription: String? {
+        String(localized: "Get web page title timeouted")
+    }
+}
+
 @MainActor
-public func getWebPageTitle(url: URL, session: URLSession = .shared) async throws -> String? {
+public func getWebPageTitle(url: URL, session: URLSession = .shared, timeout: Duration = .seconds(5)) async throws -> String? {
     let webview = WKWebView()
     let config = WKWebViewConfiguration()
     config.websiteDataStore = .nonPersistent()
@@ -18,11 +24,22 @@ public func getWebPageTitle(url: URL, session: URLSession = .shared) async throw
     }
     let delegate = NavigationDeleage()
     webview.navigationDelegate = delegate
-    return await withCheckedContinuation { continuation in
+    return try await withCheckedThrowingContinuation { continuation in
+        var finished = false
         delegate.onFinish = {
-            continuation.resume(returning: webview.title?.isEmpty == false ? webview.title : nil)
+            if !finished {
+                finished = true
+                continuation.resume(returning: webview.title?.isEmpty == false ? webview.title : nil)
+            }
         }
         webview.load(url)
+        Task.detached {
+            try? await Task.sleep(for: timeout)
+            if !finished {
+                continuation.resume(throwing: GetWebPageTitleTimeoutError())
+                finished = true
+            }
+        }
     }
 }
 
