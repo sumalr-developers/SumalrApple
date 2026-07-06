@@ -111,8 +111,8 @@ public struct RlamusClient: Sendable, Equatable {
         }
     }
 
-    public func streamTask(id: UUID) -> AsyncThrowingStream<RlamusTask, Error> {
-        AsyncThrowingStream<RlamusTask, Error> { continuation in
+    public func streamTask(id: UUID) -> AsyncThrowingStream<Optional<RlamusTask>, Error> {
+        AsyncThrowingStream<Optional<RlamusTask>, Error> { continuation in
             Task.detached {
                 let request = HTTPRequest(url: endpoint.appending(components: "task", id.uuidString, "sse"))
                 let (stream, res): (URLSession.AsyncBytes, HTTPResponse)
@@ -132,7 +132,7 @@ public struct RlamusClient: Sendable, Equatable {
                     for try await event in stream.events {
                         switch event.event {
                         case "update":
-                            let task = try decoder.decode(RlamusTask.self, from: Data(event.data.utf8))
+                            let task = try decoder.decode(Optional<RlamusTask>.self, from: Data(event.data.utf8))
                             continuation.yield(with: .success(task))
                         default:
                             break

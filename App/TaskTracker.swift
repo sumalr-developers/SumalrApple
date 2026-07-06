@@ -74,6 +74,9 @@ class TaskTracker {
             var stream = client.streamTask(id: await tracked.value.id).makeAsyncIterator()
             do {
                 while let next = try await stream.next() {
+                    guard let next else {
+                        throw PollTaskError.notFound
+                    }
                     await MainActor.run {
                         tracked._value = next
                         if let memory = try? fetchMemory(tracked.id) {

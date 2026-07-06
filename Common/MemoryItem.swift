@@ -21,8 +21,14 @@ public final class MemoryItem: CSIndexable {
         creation = .now
     }
 
-    public func streamTaskState(client: RlamusClient) -> some AsyncSequence<RlamusTaskState, Error> {
-        client.streamTask(id: taskID).map { $0.state }
+    public func streamTaskState(client: RlamusClient) -> some AsyncSequence<Optional<RlamusTaskState>, Error> {
+        client.streamTask(id: taskID).map {
+            if case let .some(task) = $0 {
+                .some(task.state)
+            } else {
+                .none
+            }
+        }
     }
 
     public var searchableItem: CSSearchableItem {
