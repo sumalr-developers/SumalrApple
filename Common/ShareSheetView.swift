@@ -85,15 +85,17 @@ public struct ShareSheetView: View {
                     return
                 }
 
-                do {
-                    let deviceInfo: NotificationRegistration? =
-                        if let token = getDeviceToken(from: .appGroup),
-                        let topic = Bundle.main.bundleIdentifier {
-                        NotificationRegistration(deviceToken: token, topic: String(topic[topic.startIndex ..< topic.lastIndex(of: ".")!]))
-                    } else {
-                        nil
-                    }
-                    for item in sharedItems {
+                let deviceInfo: NotificationRegistration? =
+                    if let token = getDeviceToken(from: .appGroup),
+                    let topic = Bundle.main.bundleIdentifier {
+                    NotificationRegistration(deviceToken: token, topic: String(topic[topic.startIndex ..< topic.lastIndex(of: ".")!]))
+                } else {
+                    nil
+                }
+
+                var errors = [any Error]()
+                for item in sharedItems {
+                    do {
                         let url = try await loadAsURL(item)
                         async let itemTask = try addMemory(url: url, client: rlamusClient, registerForNotifications: deviceInfo)
                         async let titleTask = try? getWebPageTitle(url: url)
@@ -102,13 +104,21 @@ public struct ShareSheetView: View {
                             item.title = title
                         }
                         modelContext.insert(item)
-                        try modelContext.save()
-                        completedCount += 1
+                    } catch {
+                        errors.append(error)
                     }
-                    state = .completed
+                    completedCount += 1
+                }
+
+                do {
+                    try modelContext.save()
                 } catch {
-                    print("\(error)")
-                    self.error = error
+                    errors.append(error)
+                }
+                if errors.isEmpty {
+                    state = .completed
+                } else {
+                    self.error = AggregatedError(errors: errors)
                 }
             }
             .navigationDestination(isPresented: $showSetupPage) {
@@ -121,7 +131,7 @@ public struct ShareSheetView: View {
     }
 }
 
-func loadAsURL(_ item: NSItemProvider) async throws -> URL {
+func loadAsURL(_ item: NSItemProvider) async throws (UnsupportedShareTypeError) -> URL {
     if let url = try? await item.loadObject(ofClass: NSURL.self) as URL? {
         return url
     }
@@ -169,6 +179,27 @@ extension NSItemProvider {
 struct UnsupportedShareTypeError: Error, LocalizedError {
     var errorDescription: String? {
         String(localized: "This type of shared item is not supported")
+    }
+}
+
+struct AggregatedError: Error, LocalizedError {
+    var errors: [any Error]
+
+    init(errors: [any Error]) {
+        if errors.isEmpty {
+            fatalError()
+        }
+        self.errors = errors
+    }
+
+    var errorDescription: String? {
+        if errors.count > 1 {
+            String(localized: "Several errors occurred")
+        } else if let localizedError = errors.first! as? LocalizedError {
+            localizedError.errorDescription
+        } else {
+            errors.first!.localizedDescription
+        }
     }
 }
 
