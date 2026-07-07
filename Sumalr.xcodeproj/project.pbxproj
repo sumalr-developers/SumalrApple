@@ -17,7 +17,6 @@
 		6A566DA72FE52E5800378452 /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DA62FE52E5800378452 /* Transmission */; };
 		6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DB72FE54F0C00378452 /* AsyncAlgorithms */; };
 		6A6432652FE44CED00D2368A /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432642FE44CED00D2368A /* Logging */; };
-		6A64326A2FE4547300D2368A /* Textual in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432692FE4547300D2368A /* Textual */; };
 		6A66DA8D2FE69D41009AEDF9 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6A695FE32FE2356700DB08E0 /* macOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FD72FE2356600DB08E0 /* macOSShare.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A695FF62FE235B800DB08E0 /* iOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FEC2FE235B800DB08E0 /* iOSShare.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -226,7 +225,6 @@
 		000000000000000130000000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				6A64326A2FE4547300D2368A /* Textual in Frameworks */,
 				6A4523D02FE398B000EA5AD2 /* Algorithms in Frameworks */,
 				6AF0C6C92FE23C1600B2E764 /* Common.framework in Frameworks */,
 				6A87CCCE2FE406C6004F5719 /* SwiftUIIntrospect in Frameworks */,
@@ -344,7 +342,6 @@
 				6A4523CF2FE398B000EA5AD2 /* Algorithms */,
 				6A87CCCD2FE406C6004F5719 /* SwiftUIIntrospect */,
 				6A6432642FE44CED00D2368A /* Logging */,
-				6A6432692FE4547300D2368A /* Textual */,
 				6A566DA62FE52E5800378452 /* Transmission */,
 				6A566DB72FE54F0C00378452 /* AsyncAlgorithms */,
 			);
@@ -509,7 +506,6 @@
 				6A956D872FE2FE1600834288 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				6A87CCCC2FE406C6004F5719 /* XCRemoteSwiftPackageReference "swiftui-introspect" */,
 				6A6432632FE44CED00D2368A /* XCRemoteSwiftPackageReference "swift-log" */,
-				6A6432682FE4547300D2368A /* XCRemoteSwiftPackageReference "textual" */,
 				6A64326F2FE527DE00D2368A /* XCRemoteSwiftPackageReference "Transmission" */,
 				6A566DB62FE54F0C00378452 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
@@ -1389,14 +1385,6 @@
 				minimumVersion = 1.13.2;
 			};
 		};
-		6A6432682FE4547300D2368A /* XCRemoteSwiftPackageReference "textual" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/gonzalezreal/textual";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.0;
-			};
-		};
 		6A64326F2FE527DE00D2368A /* XCRemoteSwiftPackageReference "Transmission" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nathantannar4/Transmission";
@@ -1466,11 +1454,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A6432632FE44CED00D2368A /* XCRemoteSwiftPackageReference "swift-log" */;
 			productName = Logging;
-		};
-		6A6432692FE4547300D2368A /* Textual */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6A6432682FE4547300D2368A /* XCRemoteSwiftPackageReference "textual" */;
-			productName = Textual;
 		};
 		6A87CCCD2FE406C6004F5719 /* SwiftUIIntrospect */ = {
 			isa = XCSwiftPackageProductDependency;

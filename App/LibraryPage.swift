@@ -5,7 +5,6 @@ import Foundation
 import Logging
 import SwiftData
 import SwiftUI
-import Textual
 import Transmission
 import WebKit
 
@@ -125,14 +124,15 @@ struct TaskItemView: View {
                     .padding(.bottom, 4)
             }
             if let summary = item.summary {
-                StructuredText(markdown: {
-                    if summary.count > 150 {
-                        summary.prefix(150).trimmingCharacters(in: .whitespacesAndNewlines) + "..."
+                Group {
+                    if let markdown = try? NSAttributedString(markdown: summary) {
+                        Text("\(markdown)")
                     } else {
-                        summary
+                        Text(summary)
                     }
-                }())
-                    .disabled(true)
+                }
+                .lineLimit(3)
+                .disabled(true)
             }
             if let errorMessage = item.error?.localizedDescription {
                 Text(errorMessage)

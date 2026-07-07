@@ -1,7 +1,6 @@
 import Common
 import Foundation
 import SwiftUI
-import Textual
 
 struct MemoryPage: View {
     @Environment(\.openURL) var openURL
@@ -69,9 +68,14 @@ struct MemoryPage: View {
     func present(_ item: TrackedTask) -> some View {
         ScrollView(.vertical) {
             VStack {
-                StructuredText(markdown: summary)
-                    .textual.textSelection(.enabled)
-                    .padding(.bottom)
+                Group {
+                    if let markdown = try? AttributedString(markdown: summary) {
+                        Text("\(markdown)")
+                    } else {
+                        Text(summary)
+                    }
+                }
+                .textSelection(.enabled)
                 
                 if isLoading {
                     ProgressView(value: item.progress)
