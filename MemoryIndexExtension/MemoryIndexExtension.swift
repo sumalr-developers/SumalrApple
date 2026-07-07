@@ -17,9 +17,8 @@ class MemoryIndexExtension: CSIndexExtensionRequestHandler {
                 try await searchableIndex.deleteAllSearchableItems()
                 searchableIndex.beginBatch()
                 let entities = try appModelContainer.mainContext
-                    .fetch(FetchDescriptor<MemoryItem>(), batchSize: 50)
-                    .map { MemoryEntity($0) }
-                    .map { CSSearchableItem(uniqueIdentifier: $0.id.uuidString, domainIdentifier: "memory", attributeSet: $0.attributeSet) }
+                    .fetch(FetchDescriptor<MemoryItem>())
+                    .map { $0.searchableItem }
                 try await searchableIndex.indexSearchableItems(entities)
                 try await searchableIndex.endBatch(withClientState: Data())
                 acknowledgementHandler()

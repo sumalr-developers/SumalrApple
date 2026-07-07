@@ -22,6 +22,7 @@
 		6A695FE32FE2356700DB08E0 /* macOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FD72FE2356600DB08E0 /* macOSShare.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A695FF62FE235B800DB08E0 /* iOSShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A695FEC2FE235B800DB08E0 /* iOSShare.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A87CCCE2FE406C6004F5719 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 6A87CCCD2FE406C6004F5719 /* SwiftUIIntrospect */; };
+		6AA092282FFC8AEB006315B0 /* MemoryIndexExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A97C6CC2FE7A3B100684DEE /* MemoryIndexExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6AF0C6BF2FE23C1600B2E764 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6AF0C6C92FE23C1600B2E764 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6AF0C6CA2FE23C1600B2E764 /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -62,6 +63,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6A695FEB2FE235B800DB08E0;
 			remoteInfo = iOSShare;
+		};
+		6AA092292FFC8AEB006315B0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6A66DA7A2FE694EB009AEDF9;
+			remoteInfo = MemoryIndexExtension;
 		};
 		6AF0C6C02FE23C1600B2E764 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -110,6 +118,7 @@
 			dstSubfolder = PlugIns;
 			files = (
 				6A695FF62FE235B800DB08E0 /* iOSShare.appex in Embed Foundation Extensions */,
+				6AA092282FFC8AEB006315B0 /* MemoryIndexExtension.appex in Embed Foundation Extensions */,
 				6A695FE32FE2356700DB08E0 /* macOSShare.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -325,6 +334,7 @@
 				6A695FE22FE2356700DB08E0 /* PBXTargetDependency */,
 				6A695FF52FE235B800DB08E0 /* PBXTargetDependency */,
 				6AF0C6C82FE23C1600B2E764 /* PBXTargetDependency */,
+				6AA0922A2FFC8AEB006315B0 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				000000000000000000000010 /* App */,
@@ -614,6 +624,11 @@
 			target = 6A695FEB2FE235B800DB08E0 /* iOSShare */;
 			targetProxy = 6A695FF42FE235B800DB08E0 /* PBXContainerItemProxy */;
 		};
+		6AA0922A2FFC8AEB006315B0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6A66DA7A2FE694EB009AEDF9 /* MemoryIndexExtension */;
+			targetProxy = 6AA092292FFC8AEB006315B0 /* PBXContainerItemProxy */;
+		};
 		6AF0C6C12FE23C1600B2E764 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6AF0C6B32FE23C1500B2E764 /* Common */;
@@ -779,7 +794,7 @@
 				CODE_SIGN_ENTITLEMENTS = Sumalr.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = "$(APP_BUNDLE_VERSION)";
 				DEVELOPMENT_TEAM = 3B535J795R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -842,7 +857,7 @@
 				CODE_SIGN_ENTITLEMENTS = Sumalr.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = "$(APP_BUNDLE_VERSION)";
 				DEVELOPMENT_TEAM = 3B535J795R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -900,7 +915,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_BUNDLE_VERSION)";
 				DEVELOPMENT_TEAM = 3B535J795R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -937,7 +952,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_BUNDLE_VERSION)";
 				DEVELOPMENT_TEAM = 3B535J795R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -977,7 +992,7 @@
 				CODE_SIGN_ENTITLEMENTS = macOSShare/macOSShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_BUNDLE_VERSION)";
 				DEVELOPMENT_TEAM = 3B535J795R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1022,7 +1037,7 @@
 				CODE_SIGN_ENTITLEMENTS = macOSShare/macOSShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_BUNDLE_VERSION)";
 				DEVELOPMENT_TEAM = 3B535J795R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1066,7 +1081,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = iOSShare/iOSShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_BUNDLE_VERSION)";
 				DEVELOPMENT_TEAM = 3B535J795R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSShare/Info.plist;
@@ -1101,7 +1116,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = iOSShare/iOSShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_BUNDLE_VERSION)";
 				DEVELOPMENT_TEAM = 3B535J795R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSShare/Info.plist;

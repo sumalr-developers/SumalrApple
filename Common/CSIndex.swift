@@ -48,7 +48,7 @@ async throws -> DefaultHistoryToken?
     guard let lastTransaction = transactions.last else {
         return nil
     }
-        
+
     var toBeIndexed = Set<PersistentIdentifier>()
     var toBeRemoved = Set<PersistentIdentifier>()
     for transaction in transactions {
