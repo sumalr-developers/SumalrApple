@@ -9,10 +9,13 @@ struct SearchPage: View {
     @Environment(\.tasks) var tasks
     @Environment(\.modelContext) var modelContext
     @Environment(\.openURL) var openURL
+    @Environment(\.errorHandler) var errorHandler
 
     @State var candidates = [TrackedTask]()
     @State var suggestions = [CSUserQuery.Suggestion]()
     @State var buffer = ""
+    @State var stableIndexShown = false
+
     let queryContext: CSUserQueryContext
     init() {
         queryContext = CSUserQueryContext()
@@ -35,13 +38,49 @@ struct SearchPage: View {
                             Text("Unnamed memory")
                         }
                         if let summary = candidate.summary {
-                            Text(summary)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
+                            Group {
+                                if let markdown = try? AttributedString(markdown: summary) {
+                                    Text(markdown)
+                                } else {
+                                    Text(summary)
+                                }
+                            }
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
                         }
                     }
                 }
                 .buttonStyle(.plain)
+            }
+        }
+        .overlay {
+            if stableIndexShown {
+                VStack {
+                    Image(systemName: "magnifyingglass")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 48)
+                    Text("No Results")
+                        .font(.title)
+                    Text("If this is undesired, you may try \(try! AttributedString(markdown: "[invalidating index](in-app://invalidate-index)"))")
+                        .environment(\.openURL, OpenURLAction(handler: { _ in
+                            _ = errorHandler.runCatching {
+                                try spotlightModelContainer.mainContext.delete(model: CSMemory.self)
+                                withAnimation {
+                                    stableIndexShown = false
+                                }
+                                Task {
+                                    _ = await errorHandler.runCatching {
+                                        _ = try await updateCSIndex(appMainIndex, dataModelContext: appModelContainer.mainContext, indexModelContext: spotlightModelContainer.mainContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
+                                        stableIndexShown = !(try await search(query: buffer))
+                                    }
+                                }
+                            }
+                            return .handled
+                        }))
+                }
+                .padding()
+                .foregroundStyle(.secondary)
             }
         }
         .listStyle(.plain)
@@ -61,15 +100,8 @@ struct SearchPage: View {
             }
         }
         .task {
-            do {
-                guard let indexUpuntil = try await updateCSIndex(appMainIndex, dataModelContext: appModelContainer.mainContext, indexModelContext: spotlightModelContainer.mainContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
-                else {
-                    return
-                }
-                
-                try appModelContainer.mainContext.deleteHistory(HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate { $0.token < indexUpuntil }))
-            } catch {
-                appLogger.error("failed to update Spotlight index", error: error)
+            _ = await errorHandler.runCatching {
+                _ = try await updateCSIndex(appMainIndex, dataModelContext: appModelContainer.mainContext, indexModelContext: spotlightModelContainer.mainContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
             }
         }
         .task(id: buffer) {
@@ -78,43 +110,50 @@ struct SearchPage: View {
             } catch {
                 return
             }
-            candidates = []
-            suggestions = []
-            if buffer.isEmpty {
-                return
-            }
-
-            let query = CSUserQuery(userQueryString: buffer, userQueryContext: queryContext)
             do {
-                for try await element in query.responses {
-                    switch element {
-                    case let .item(item):
-                        if let url = URL(string: item.item.uniqueIdentifier),
-                           let deepLink = DeepLink(url: url) {
-                            switch deepLink {
-                            case let .memory(taskID):
-                                do {
-                                    if let memory = try MemoryItem.fetch(taskID: taskID, modelContext: modelContext) {
-                                        candidates.append(tasks?.tracked(memory: memory) ?? TrackedTask(memory: memory))
-                                    } else {
-                                        appLogger.error("unknown task id")
-                                    }
-                                } catch {
-                                    appLogger.error("failed to look up memory item", error: error)
-                                }
-                            }
-                        } else {
-                            appLogger.warning("unknown response item")
-                        }
-                    case let .suggestion(suggestion):
-                        self.suggestions.append(suggestion)
-                    @unknown default:
-                        fatalError()
-                    }
-                }
+                stableIndexShown = !(try await search(query: buffer))
             } catch {
                 appLogger.error("user query failed", error: error)
             }
         }
+    }
+
+    /// returns: is result not empty with reasonable query
+    func search(query: String) async throws -> Bool {
+        candidates = []
+        suggestions = []
+        if query.isEmpty {
+            return true
+        }
+
+        let query = CSUserQuery(userQueryString: query, userQueryContext: queryContext)
+        for try await element in query.responses {
+            switch element {
+            case let .item(item):
+                if let url = URL(string: item.item.uniqueIdentifier),
+                   let deepLink = DeepLink(url: url) {
+                    switch deepLink {
+                    case let .memory(taskID):
+                        do {
+                            if let memory = try MemoryItem.fetch(taskID: taskID, modelContext: modelContext) {
+                                candidates.append(tasks?.tracked(memory: memory) ?? TrackedTask(memory: memory))
+                            } else {
+                                appLogger.error("unknown task id")
+                            }
+                        } catch {
+                            appLogger.error("failed to look up memory item", error: error)
+                        }
+                    }
+                } else {
+                    appLogger.warning("unknown response item")
+                }
+            case let .suggestion(suggestion):
+                suggestions.append(suggestion)
+            @unknown default:
+                fatalError()
+            }
+        }
+
+        return !candidates.isEmpty || !suggestions.isEmpty
     }
 }

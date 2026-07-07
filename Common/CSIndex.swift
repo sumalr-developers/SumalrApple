@@ -35,56 +35,68 @@ async throws -> DefaultHistoryToken?
         }
     }
 
-    let historyFetcher: HistoryDescriptor<DefaultHistoryTransaction>
     if let latestIndex {
+        // incremental index
         let last = latestIndex.dataToken
-        historyFetcher = .init(predicate: #Predicate {
+        let historyFetcher = HistoryDescriptor<DefaultHistoryTransaction>(predicate: #Predicate {
             $0.token > last
         })
-    } else {
-        historyFetcher = .init()
-    }
-    let transactions = try dataModelContext.fetchHistory(historyFetcher)
-    guard let lastTransaction = transactions.last else {
-        return nil
-    }
+        
+        let transactions = try dataModelContext.fetchHistory(historyFetcher)
+        guard let lastTransaction = transactions.last else {
+            // no changes
+            return nil
+        }
 
-    var toBeIndexed = Set<PersistentIdentifier>()
-    var toBeRemoved = Set<PersistentIdentifier>()
-    for transaction in transactions {
-        for change in transaction.changes {
-            switch change {
-            case let .insert(historyInsert):
-                if historyInsert is any HistoryInsert<Index.Data> {
-                    toBeIndexed.insert(historyInsert.changedPersistentIdentifier)
+        var toBeIndexed = Set<PersistentIdentifier>()
+        var toBeRemoved = Set<PersistentIdentifier>()
+        for transaction in transactions {
+            for change in transaction.changes {
+                switch change {
+                case let .insert(historyInsert):
+                    if historyInsert is any HistoryInsert<Index.Data> {
+                        toBeIndexed.insert(historyInsert.changedPersistentIdentifier)
+                    }
+                case let .update(historyUpdate):
+                    if historyUpdate is any HistoryUpdate<Index.Data> {
+                        toBeIndexed.insert(historyUpdate.changedPersistentIdentifier)
+                    }
+                case let .delete(historyDelete):
+                    if historyDelete is any HistoryDelete<Index.Data> {
+                        toBeIndexed.remove(historyDelete.changedPersistentIdentifier)
+                        toBeRemoved.insert(historyDelete.changedPersistentIdentifier)
+                    }
+                @unknown default:
+                    fatalError()
                 }
-            case let .update(historyUpdate):
-                if historyUpdate is any HistoryUpdate<Index.Data> {
-                    toBeIndexed.insert(historyUpdate.changedPersistentIdentifier)
-                }
-            case let .delete(historyDelete):
-                if historyDelete is any HistoryDelete<Index.Data> {
-                    toBeIndexed.remove(historyDelete.changedPersistentIdentifier)
-                    toBeRemoved.insert(historyDelete.changedPersistentIdentifier)
-                }
-            @unknown default:
-                fatalError()
             }
         }
-    }
 
-    let models = try dataModelContext.fetch(FetchDescriptor<Index.Data>())
-    let modelsToBeIndexed = models.filter { toBeIndexed.contains($0.id) }
-    let modelsToBeRemoved = models.filter { toBeRemoved.contains($0.id) }
-    csIndex.beginBatch()
-    try await csIndex.indexSearchableItems(modelsToBeIndexed.map { $0.searchableItem })
-    try await csIndex.deleteSearchableItems(withIdentifiers: modelsToBeRemoved.map { $0.searchableItem.uniqueIdentifier })
-    try await csIndex.endBatch(withClientState: .init())
+        let models = try dataModelContext.fetch(FetchDescriptor<Index.Data>())
+        let modelsToBeIndexed = models.filter { toBeIndexed.contains($0.id) }
+        let modelsToBeRemoved = models.filter { toBeRemoved.contains($0.id) }
+        csIndex.beginBatch()
+        try await csIndex.indexSearchableItems(modelsToBeIndexed.map { $0.searchableItem })
+        try await csIndex.deleteSearchableItems(withIdentifiers: modelsToBeRemoved.map { $0.searchableItem.uniqueIdentifier })
+        try await csIndex.endBatch(withClientState: .init())
 
-    if let latestIndex {
         indexModelContext.delete(latestIndex)
+        indexModelContext.insert(Index(dataToken: lastTransaction.token, date: .now))
+        try? indexModelContext.save()
+        return lastTransaction.token
+    } else {
+        // full scale index
+        try await csIndex.deleteAllSearchableItems()
+        let models = try dataModelContext.fetch(FetchDescriptor<Index.Data>())
+        try await csIndex.indexSearchableItems(models.map { $0.searchableItem })
+        
+        var latestTransactionFetcher = HistoryDescriptor<DefaultHistoryTransaction>(sortBy: [.init(\.token, order: .reverse)])
+        latestTransactionFetcher.fetchLimit = 1
+        let latestTransaction = try dataModelContext.fetchHistory(latestTransactionFetcher).first
+        if let latestTransaction {
+            indexModelContext.insert(Index(dataToken: latestTransaction.token, date: .now))
+            try indexModelContext.save()
+        }
+        return latestTransaction?.token
     }
-    indexModelContext.insert(Index(dataToken: lastTransaction.token, date: .now))
-    try? indexModelContext.save()
-    return lastTransaction.token
 }
