@@ -9,7 +9,7 @@ struct MemoryPage: View {
 
     @State var summary: String = ""
     @State private var retryState: RetryState? = nil
-    
+
     var isLoading: Bool {
         item != nil && item?.summary == nil
     }
@@ -68,20 +68,16 @@ struct MemoryPage: View {
     func present(_ item: TrackedTask) -> some View {
         ScrollView(.vertical) {
             VStack {
-                Group {
-                    if let markdown = try? AttributedString(markdown: summary) {
-                        Text("\(markdown)")
-                    } else {
-                        Text(summary)
-                    }
+                if let summary = item.summary {
+                    MarkdownText(summary)
+                        .textSelection(.enabled)
                 }
-                .textSelection(.enabled)
-                
+
                 if isLoading {
                     ProgressView(value: item.progress)
                         .frame(maxWidth: 150)
                 }
-                
+
                 Text("Created \(Text(item.creation, style: .relative)) ago")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -131,7 +127,7 @@ struct MemoryPage: View {
                 }
             }
             .keyboardShortcut(.defaultAction)
-            
+
             Button(role: .cancel) {
                 retryState = nil
             }

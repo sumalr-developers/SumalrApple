@@ -124,15 +124,9 @@ struct TaskItemView: View {
                     .padding(.bottom, 4)
             }
             if let summary = item.summary {
-                Group {
-                    if let markdown = try? NSAttributedString(markdown: summary) {
-                        Text("\(markdown)")
-                    } else {
-                        Text(summary)
-                    }
-                }
-                .lineLimit(3)
-                .disabled(true)
+                MarkdownText(summary)
+                    .lineLimit(3)
+                    .disabled(true)
             }
             if let errorMessage = item.error?.localizedDescription {
                 Text(errorMessage)
