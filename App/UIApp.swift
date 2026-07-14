@@ -5,7 +5,6 @@
     import Logging
     import UIKit
     internal import Combine
-    internal import ConcurrencyExtras
 
     @Observable
     class UIApp: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {

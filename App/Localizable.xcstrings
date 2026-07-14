@@ -10,6 +10,9 @@
     "Add" : {
 
     },
+    "Automatic" : {
+
+    },
     "Close" : {
 
     },
@@ -25,7 +28,16 @@
     "Delete" : {
 
     },
+    "Discard" : {
+
+    },
     "Discard the current summary and try again?" : {
+
+    },
+    "Done" : {
+
+    },
+    "Edit" : {
 
     },
     "Enter website address" : {
@@ -34,7 +46,13 @@
     "Find a memory..." : {
 
     },
+    "Group list" : {
+
+    },
     "If this is undesired, you may try %@" : {
+
+    },
+    "Indexing your memories, during which this list may be outdated..." : {
 
     },
     "Invalid address" : {
@@ -44,6 +62,9 @@
 
     },
     "Library" : {
+
+    },
+    "List" : {
 
     },
     "Memory" : {
@@ -115,13 +136,38 @@
     "This memory has been deleted from the remote server, therehence impossible to retry in place. You can remove it and create a new one manually" : {
 
     },
+    "Topic" : {
+
+    },
+    "Topics" : {
+
+    },
+    "Undesired model: expected \"%@\", got \"%@\"" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Undesired model: expected \"%1$@\", got \"%2$@\""
+          }
+        }
+      }
+    },
     "Unnamed memory" : {
+
+    },
+    "Unnamed topic" : {
 
     },
     "URL" : {
 
     },
     "Use" : {
+
+    },
+    "User-defined" : {
+
+    },
+    "View mode" : {
 
     },
     "Which memory?" : {

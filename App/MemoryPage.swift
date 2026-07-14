@@ -11,21 +11,17 @@ struct MemoryPage: View {
     @State private var retryState: RetryState? = nil
 
     var isLoading: Bool {
-        item != nil && item?.summary == nil
+        item.summary == nil
     }
 
-    let item: TrackedTask?
-    init(_ item: TrackedTask? = nil) {
+    let item: TrackedTask
+    init(_ item: TrackedTask) {
         self.item = item
     }
 
     var body: some View {
         Group {
-            if let item {
-                present(item)
-            } else {
-                Text("Item not found")
-            }
+            present(item)
         }
         .alert(error: Binding(get: {
             if case let .error(err) = retryState {
@@ -85,11 +81,11 @@ struct MemoryPage: View {
             }
             .padding(.horizontal)
             .onAppear {
-                if let summary = item.value.summary {
+                if let summary = item.task.summary {
                     self.summary = summary
                 }
             }
-            .onChange(of: item.value) { _, newValue in
+            .onChange(of: item.task) { _, newValue in
                 if let summary = newValue.summary {
                     self.summary = summary
                 }
@@ -115,7 +111,7 @@ struct MemoryPage: View {
                     }
                     do {
                         let client = try await getRlamusClient()
-                        try await client.patchTask(id: item.value.id)
+                        try await client.patchTask(id: item.task.id)
                         try await tasks.reset(tracked: item)
                     } catch PatchTaskError.notFound, PollTaskError.notFound {
                         retryState = .notFound

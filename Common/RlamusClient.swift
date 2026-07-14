@@ -62,7 +62,7 @@ public struct RlamusClient: Sendable, Equatable {
         return uuid
     }
 
-    public func patchTask(id: UUID, url: String? = nil, registerForNotifications apnInfo: NotificationRegistration? = nil) async throws(PatchTaskError) {
+    public func patchTask(id: UUID, url: String? = nil, registerForNotifications apnInfo: NotificationRegistration? = nil) async throws (PatchTaskError) {
         var request = HTTPRequest(method: .patch, url: endpoint.appending(components: "task", id.uuidString))
         let emptyRequest = url == nil && apnInfo == nil
         request.headerFields[.contentType] = if emptyRequest {
@@ -81,12 +81,12 @@ public struct RlamusClient: Sendable, Equatable {
         } catch {
             throw .io(error)
         }
-        
+
         if res.status != .accepted {
             if res.status == .notFound {
                 throw .notFound
             }
-            
+
             throw .unexpectedStatus(res.status)
         }
     }
@@ -159,6 +159,36 @@ public struct RlamusClient: Sendable, Equatable {
             throw .unexpectedStatus(res.status)
         }
     }
+
+    public func getEmbeddings<S: Sequence>(queries: S) async throws (GetEmbeddingsError) -> GetEmbeddingsResponseBody
+        where S.Element == String {
+        let requestBody: Data
+        do {
+            let encoder = JSONEncoder()
+            requestBody = try encoder.encode(GetEmbeddingsRequestBody(queries: Array(queries)))
+        } catch {
+            throw .jsonEncode(error)
+        }
+
+        var request = HTTPRequest(method: .post, url: endpoint.appending(component: "embeddings"))
+        request.headerFields[.contentType] = "application/json"
+        let (data, res): (Data, HTTPResponse)
+        do {
+            (data, res) = try await urlSession.upload(for: request, from: requestBody)
+        } catch {
+            throw .io(error)
+        }
+
+        if res.status != .ok {
+            throw .unexpectedStatus(res.status)
+        }
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(GetEmbeddingsResponseBody.self, from: data)
+        } catch {
+            throw .jsonDecode(error)
+        }
+    }
 }
 
 func getCreateTaskPayload(url: String? = nil, apnInfo: NotificationRegistration? = nil) -> String {
@@ -181,6 +211,15 @@ public struct NotificationRegistration: Sendable {
         self.deviceToken = deviceToken
         self.topic = topic
     }
+}
+
+struct GetEmbeddingsRequestBody: Codable {
+    let queries: [String]
+}
+
+public struct GetEmbeddingsResponseBody: Codable {
+    public let modelName: String
+    public let embeddings: [[Float32]]
 }
 
 public enum VerifyError: Error {
@@ -217,5 +256,12 @@ public enum StreamTaskError: Error {
 public enum DeleteTaskError: Error {
     case io(any Error)
     case notFound
+    case unexpectedStatus(HTTPResponse.Status)
+}
+
+public enum GetEmbeddingsError: Error {
+    case io(any Error)
+    case jsonEncode(any Error)
+    case jsonDecode(any Error)
     case unexpectedStatus(HTTPResponse.Status)
 }

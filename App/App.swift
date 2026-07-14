@@ -35,7 +35,7 @@ import WebKit
                     // Load the store synchronously so it completes before initializing the
                     // CloudKit schema.
                     desc.shouldAddStoreAsynchronously = false
-                    if let mom = NSManagedObjectModel.makeManagedObjectModel(for: [MemoryItem.self]) {
+                    if let mom = NSManagedObjectModel.makeManagedObjectModel(for: [MemoryItem.self, TopicItem.self, EmbeddingModelItem.self]) {
                         let container = NSPersistentCloudKitContainer(name: "MemoryItem", managedObjectModel: mom)
                         container.persistentStoreDescriptions = [desc]
                         container.loadPersistentStores { _, err in
@@ -236,7 +236,7 @@ fileprivate struct MemoryScene: Scene {
                    let memory: MemoryItem = modelContext.registeredModel(for: openMemory.pk) {
                     MemoryPage(tasks?.tracked(memory: memory) ?? TrackedTask(memory: memory))
                 } else {
-                    MemoryPage()
+                    Text("Item not found")
                 }
             }
             .sheet(isPresented: $showSetupSheet) {

@@ -11,7 +11,7 @@ struct WebPreviewPage: View {
 
     @State private var urlBuffer = ""
     @State private var showInvalidUrlBuffer = false
-    @State private var activeActionTask: Task<(), Error>? = nil
+    @State private var activeActionTask: Task<Void, Error>? = nil
 
     var body: some View {
         Group {

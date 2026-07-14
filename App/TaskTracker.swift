@@ -32,13 +32,13 @@ class TaskTracker {
     func tracked(memory: MemoryItem) -> TrackedTask {
         let derivedTask = TrackedTask(memory: memory)
         if let task = data.tasks[memory.taskID] {
-            if case .done = derivedTask.value.state {
-                task._value = derivedTask.value
+            if case .done = derivedTask.task.state {
+                task._task = derivedTask.task
             }
             return task
         }
 
-        if !memory.stale, case .done = derivedTask.value.state {
+        if !memory.stale, case .embedding = derivedTask.task.state {
             return derivedTask
         }
 
@@ -47,10 +47,10 @@ class TaskTracker {
     }
     
     func reset(tracked: TrackedTask) async throws(PollTaskError) {
-        if let job = data.jobs[tracked.value.id] {
+        if let job = data.jobs[tracked.task.id] {
             job.cancel()
         }
-        data.updateJob(for: tracked.value.id, newValue: createUpdatingJob(for: tracked))
+        data.updateJob(for: tracked.task.id, newValue: createUpdatingJob(for: tracked))
     }
 
     func pauseAll() async {
@@ -68,26 +68,38 @@ class TaskTracker {
     private func fetchMemory(_ taskID: UUID) throws -> MemoryItem? {
         try MemoryItem.fetch(taskID: taskID, modelContext: memoryModelContext)
     }
+    
+    private func sychronizeMemoryWithRemote(_ memory: MemoryItem, newValue: RlamusTask) {
+        memory.summary = newValue.summary
+        if let title = newValue.title {
+            memory.title = title
+        }
+        if case let .done(_, _, embedding, modelName) = newValue.state {
+            memory.embedding = embedding
+            do {
+                memory.embeddingModel = try EmbeddingModelItem.fetchOrCreate(name: modelName, backendName: client.endpoint.absoluteString, context: memoryModelContext)
+            } catch {
+                appLogger.error("failed to fetch embedding model item", error: error)
+            }
+        }
+        try? memoryModelContext.save()
+    }
 
     private func createUpdatingJob(for tracked: TrackedTask) -> Task<Void, Never> {
         return Task.detached { [self] in
-            var stream = client.streamTask(id: await tracked.value.id).makeAsyncIterator()
+            var stream = client.streamTask(id: await tracked.task.id).makeAsyncIterator()
             do {
                 while let next = try await stream.next() {
                     guard let next else {
                         throw PollTaskError.notFound
                     }
                     await MainActor.run {
-                        tracked._value = next
+                        tracked._task = next
                         if let memory = try? fetchMemory(tracked.id) {
-                            memory.summary = next.summary
-                            if let title = next.title {
-                                memory.title = title
-                            }
-                            try? memoryModelContext.save()
+                            sychronizeMemoryWithRemote(memory, newValue: next)
                         }
                     }
-                    if case .done = next.state {
+                    if case .embedding = next.state {
                         Task { @MainActor in
                             do {
                                  _ = try await updateCSIndex(self.csIndex, dataModelContext: self.memoryModelContext, indexModelContext: self.csModelContext, indexFetchDescriptor: FetchDescriptor<CSMemory>())
@@ -97,6 +109,9 @@ class TaskTracker {
                         }
                         
                         break
+                    }
+                    await MainActor.run {
+                        tracked._error = nil
                     }
                 }
             } catch {
@@ -136,18 +151,18 @@ fileprivate class TaskTrackerData {
 }
 
 @Observable
-class TrackedTask: Identifiable {
-    fileprivate var _value: RlamusTask
+class TrackedTask: Identifiable, ListItemDisplayProtocol {
+    fileprivate var _task: RlamusTask
     fileprivate var _error: (any Error)?
     let initialTitle: String?
     let creation: Date
 
-    var value: RlamusTask {
-        _value
+    var task: RlamusTask {
+        _task
     }
 
     var title: String? {
-        _value.title ?? initialTitle
+        _task.title ?? initialTitle
     }
 
     var error: (any Error)? {
@@ -155,36 +170,38 @@ class TrackedTask: Identifiable {
     }
 
     var summary: String? {
-        _value.summary
+        _task.summary
     }
 
     var id: UUID {
-        _value.id
+        _task.id
     }
 
     var url: URL {
-        _value.url
+        _task.url
     }
     
     var progress: Float {
-        let currentStep = switch value.state {
+        let currentStep = switch task.state {
         case .`init`:
             0
         case .scraping:
             1
         case .summarizing:
             2
-        case .done:
+        case .embedding:
             3
         case .failed:
             3
+        case .done:
+            4
         }
-        return Float(currentStep) / 3
+        return Float(currentStep) / 4
     }
 
 
     init(value: RlamusTask, initialTitle: String? = nil, creation: Date) {
-        _value = value
+        _task = value
         self.initialTitle = initialTitle
         self.creation = creation
     }
@@ -192,7 +209,7 @@ class TrackedTask: Identifiable {
     convenience init(memory: MemoryItem) {
         let initialState: RlamusTaskState
         if let summary = memory.summary {
-            initialState = .done(title: memory.title, summary: summary)
+            initialState = .embedding(title: memory.title, summary: summary)
         } else {
             initialState = .`init`
         }

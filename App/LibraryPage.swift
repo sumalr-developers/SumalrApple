@@ -113,7 +113,7 @@ struct TaskItemView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if isLoading {
-                ProgressView(value: Float(item.progress), total: 3)
+                ProgressView(value: item.progress)
                     .frame(maxWidth: .infinity)
                     .animation(.default, value: isLoading)
             }
@@ -131,7 +131,7 @@ struct TaskItemView: View {
             if let errorMessage = item.error?.localizedDescription {
                 Text(errorMessage)
                     .foregroundStyle(.red)
-            } else if case let .failed(message) = item.value.state {
+            } else if case let .failed(message) = item.task.state {
                 Text(message)
                     .foregroundStyle(.red)
             }
@@ -156,7 +156,7 @@ struct TaskItemView: View {
         TaskItemView(TrackedTask(value: RlamusTask(id: UUID(), url: URL(string: "https://example.com")!, state: .scraping), initialTitle: "Some page", creation: .now))
             .padding()
 
-        TaskItemView(TrackedTask(value: RlamusTask(id: UUID(), url: URL(string: "https://example.com")!, state: .done(title: "Some page", summary: Array(repeating: "Example domain is for demostration purpose only and shouldn't be used in production.", count: 50).joined(separator: "\n"))), creation: .now))
+        TaskItemView(TrackedTask(value: RlamusTask(id: UUID(), url: URL(string: "https://example.com")!, state: .embedding(title: "Some page", summary: Array(repeating: "Example domain is for demostration purpose only and shouldn't be used in production.", count: 50).joined(separator: "\n"))), creation: .now))
             .padding()
     }
 }

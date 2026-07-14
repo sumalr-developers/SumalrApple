@@ -14,7 +14,7 @@ struct TaskTests {
                     }
                 }
         }
-        """, Common.RlamusTask(id: UUID(uuidString: "f025320a-9cd1-4cce-94cc-8166090cf922")!, url: URL(string: "https://elfsternberg.com/blog/axum-sse-remote-heartbeat/")!, state: .done(title: "Elf Sternberg: Async Rust: Server-Side Events with a Remote Heartbeat", summary: "This article documents the development of an asynchronous Rust web application."))
+        """, Common.RlamusTask(id: UUID(uuidString: "f025320a-9cd1-4cce-94cc-8166090cf922")!, url: URL(string: "https://elfsternberg.com/blog/axum-sse-remote-heartbeat/")!, state: .embedding(title: "Elf Sternberg: Async Rust: Server-Side Events with a Remote Heartbeat", summary: "This article documents the development of an asynchronous Rust web application."))
 
     ), ("""
         {
@@ -26,7 +26,7 @@ struct TaskTests {
                     }
                 }
         }
-        """, Common.RlamusTask(id: UUID(uuidString: "f025320a-9cd1-4cce-94cc-8166090cf922")!, url: URL(string: "https://elfsternberg.com/blog/axum-sse-remote-heartbeat/")!, state: .done(title: nil, summary: "This article documents the development of an asynchronous Rust web application."))
+        """, Common.RlamusTask(id: UUID(uuidString: "f025320a-9cd1-4cce-94cc-8166090cf922")!, url: URL(string: "https://elfsternberg.com/blog/axum-sse-remote-heartbeat/")!, state: .embedding(title: nil, summary: "This article documents the development of an asynchronous Rust web application."))
 
     ), ("""
             {

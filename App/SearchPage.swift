@@ -29,26 +29,9 @@ struct SearchPage: View {
         List {
             ForEach(candidates) { candidate in
                 Button {
-                    openURL(DeepLink.memory(taskID: candidate.value.id).url)
+                    openURL(DeepLink.memory(taskID: candidate.task.id).url)
                 } label: {
-                    VStack(alignment: .leading) {
-                        if let title = candidate.title {
-                            Text(title)
-                        } else {
-                            Text("Unnamed memory")
-                        }
-                        if let summary = candidate.summary {
-                            Group {
-                                if let markdown = try? AttributedString(markdown: summary) {
-                                    Text(markdown)
-                                } else {
-                                    Text(summary)
-                                }
-                            }
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                        }
-                    }
+                    CandidateItem(candidate)
                 }
                 .buttonStyle(.plain)
             }
@@ -137,16 +120,18 @@ struct SearchPage: View {
                         do {
                             if let memory = try MemoryItem.fetch(taskID: taskID, modelContext: modelContext) {
                                 candidates.append(tasks?.tracked(memory: memory) ?? TrackedTask(memory: memory))
+                                continue
                             } else {
                                 appLogger.error("unknown task id")
                             }
                         } catch {
                             appLogger.error("failed to look up memory item", error: error)
                         }
+                    default:
+                        break
                     }
-                } else {
-                    appLogger.warning("unknown response item")
                 }
+                appLogger.warning("unknown response item")
             case let .suggestion(suggestion):
                 suggestions.append(suggestion)
             @unknown default:
@@ -155,5 +140,34 @@ struct SearchPage: View {
         }
 
         return !candidates.isEmpty || !suggestions.isEmpty
+    }
+    
+    struct CandidateItem<D: ListItemDisplayProtocol>: View {
+        let candidate: D
+        
+        init(_ candidate: D) {
+            self.candidate = candidate
+        }
+        
+        var body: some View {
+            VStack(alignment: .leading) {
+                if let title = candidate.title {
+                    Text(title)
+                } else {
+                    Text("Unnamed memory")
+                }
+                if let summary = candidate.summary {
+                    Group {
+                        if let markdown = try? AttributedString(markdown: summary) {
+                            Text(markdown)
+                        } else {
+                            Text(summary)
+                        }
+                    }
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                }
+            }
+        }
     }
 }

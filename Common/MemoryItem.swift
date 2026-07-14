@@ -1,9 +1,10 @@
 import CoreSpotlight
 import Foundation
 import SwiftData
+import ClusterKit
 
 @Model
-public final class MemoryItem: CSIndexable {
+public final class MemoryItem {
     public var url: String = ""
     public var title: String?
     public var summary: String?
@@ -11,9 +12,10 @@ public final class MemoryItem: CSIndexable {
     public var creation: Date = Date.distantFuture
     /// Force fetch from remote server
     public var stale: Bool = false
-
-    /// Associate with [CSMemory]
-    public var csIndexID: UUID { taskID }
+    public var embedding: [Float32]?
+    public var embeddingModel: EmbeddingModelItem?
+    @Relationship(inverse: \TopicItem.memories)
+    public var topics: [TopicItem]?
 
     public init(url: String, taskID: UUID) {
         self.url = url
@@ -33,6 +35,24 @@ public final class MemoryItem: CSIndexable {
 
     public var searchableItem: CSSearchableItem {
         .init(memory: self)
+    }
+}
+
+extension MemoryItem: CSIndexable {
+    /// Associate with [CSMemory]
+    public var csIndexID: UUID { taskID }
+}
+
+extension MemoryItem: ListItemDisplayProtocol {
+}
+
+extension MemoryItem: CKFloatArrayCovertible {
+    public var floatArray: [Float32] {
+        if let embedding {
+            embedding
+        } else {
+            fatalError("reading embedding while it's empty")
+        }
     }
 }
 
