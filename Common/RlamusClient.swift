@@ -76,7 +76,7 @@ public struct RlamusClient: Sendable, Equatable {
                 (data, res) = try await urlSession.upload(for: request, from: "{}".data(using: .utf8)!)
             } else {
                 let payload = getCreateTaskPayload(url: url, apnInfo: apnInfo)
-                (data, res) = try await urlSession.upload(for: request, from: "{}".data(using: .utf8)!)
+                (data, res) = try await urlSession.upload(for: request, from: payload.data(using: .utf8)!)
             }
         } catch {
             throw .io(error)
