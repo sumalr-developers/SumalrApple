@@ -41,11 +41,11 @@ struct TopicsPage: View {
             ToolbarItem(placement: .primaryAction) {
                 let picker =
                     Picker("View mode", selection: $viewMode) {
-                        Label("Group list", systemImage: "list.bullet.indent")
+                        Label("Group list", systemImage: "rectangle.3.group")
                             .tag(ViewMode.groupList)
                         Label("List", systemImage: "list.bullet")
                             .tag(ViewMode.list)
-                        Label("Topic", systemImage: "folder")
+                        Label("Topic", systemImage: "list.bullet.indent")
                             .tag(ViewMode.folders)
                     }
                 #if os(macOS)
@@ -163,8 +163,8 @@ struct TopicsPageFolderView: View {
             }
 
             Section("Automatic") {
-                ForEach(topics.filter { !$0.isUserDefined }) { topic in
-                    folderFor(topic: topic)
+                OutlineGroup(topics.filter { !$0.isUserDefined && $0.parent == nil }, children: \.children) { childTopic in
+                    folderFor(topic: childTopic)
                 }
             }
         }
@@ -363,7 +363,6 @@ struct TopicsPageListView: View {
 }
 
 struct TopicView: View {
-    @Environment(\.openURL) var openURL
     let topic: TopicItem
     var body: some View {
         List {
@@ -383,6 +382,7 @@ struct TopicView: View {
                 ToolbarItem(placement: .primaryAction) {
                     TopicNameInput(topic: topic)
                         .foregroundStyle(.primary)
+                        .frame(minWidth: 120)
                 }
                 .sharedBackgroundVisibility(.hidden)
             }
@@ -391,9 +391,7 @@ struct TopicView: View {
 
     var listItems: some View {
         ForEach(topic.memories?.sorted(by: { $0.creation > $1.creation }) ?? []) { memory in
-            Button {
-                openURL(DeepLink.memory(taskID: memory.taskID).url)
-            } label: {
+            Link(destination: DeepLink.memory(taskID: memory.taskID).url) {
                 SearchPage.CandidateItem(memory)
             }
             .buttonStyle(.plain)

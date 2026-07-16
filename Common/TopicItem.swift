@@ -8,12 +8,17 @@ public class TopicItem {
     public var creation = Date.distantFuture
     public var modification = Date.distantFuture
     public var isUserDefined = false
+    public var parent: TopicItem?
     
-    public init(name: String? = nil, isUserDefined: Bool = false, memories: [MemoryItem]) {
+    @Relationship(deleteRule: .cascade, inverse: \TopicItem.parent)
+    public var children: [TopicItem]?
+    
+    public init(name: String? = nil, isUserDefined: Bool = false, memories: [MemoryItem], parent: TopicItem? = nil) {
         self.name = name
         self.isUserDefined = isUserDefined
         self.memories = memories
         self.creation = .now
         self.modification = .now
+        self.parent = parent
     }
 }
