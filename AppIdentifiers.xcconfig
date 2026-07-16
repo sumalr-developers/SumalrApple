@@ -8,5 +8,5 @@
 DEEP_LINK_SCHEME = sumalr
 APP_GROUP_ID = group.zhufucdev.sumalr
 APP_CODENAME = com.zhufucdev.sumalr
-APP_BUNDLE_VERSION = 8
+APP_BUNDLE_VERSION = 9
 ICLOUD_CONTAINER_ID = iCloud.zhufucdev.Sumalr
