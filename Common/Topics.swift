@@ -59,8 +59,13 @@ func getTopicsInternal<M: Sequence, T: Sequence>(
     func find(_ n: Node) -> Node {
         var cur = n
         while let p = uf[cur], p != cur { cur = p }
-        if let root = uf[n] { uf[n] = root } // light path compression
-        return uf[n] ?? n
+        // path compression: point every node on the walk directly at the true root
+        var walker = n
+        while let p = uf[walker], p != cur {
+            uf[walker] = cur
+            walker = p
+        }
+        return cur
     }
     func union(_ a: Node, _ b: Node) {
         let ra = find(a), rb = find(b)
@@ -97,7 +102,7 @@ func getTopicsInternal<M: Sequence, T: Sequence>(
             if !newParent.children!.contains(where: { $0.id == topic.id }) {
                 newParent.children!.append(topic)
             }
-            
+
             var parentMemorySet: Set<MemoryItem> = if let mem = newParent.memories { Set(mem) } else { Set() }
             for mem in topic.memories ?? [] {
                 parentMemorySet.insert(mem)
@@ -117,10 +122,10 @@ func getTopicsInternal<M: Sequence, T: Sequence>(
         }
 
         // Score every (topic, cluster) pair in this component that actually overlaps.
-        var overlap: [(topicID: PersistentIdentifier, clusterIdx: Int, score: Int)] = []
+        var overlap: [(topicID: PersistentIdentifier, clusterIdx: Int, score: Float)] = []
         for tid in group.topics {
             for cidx in group.clusters {
-                let score = oldMembers[tid]!.intersection(clusterMembersByIdx[cidx]!).count
+                let score = Float(oldMembers[tid]!.intersection(clusterMembersByIdx[cidx]!).count) / Float(clusterMembersByIdx[cidx]!.count)
                 if score > 0 { overlap.append((tid, cidx, score)) }
             }
         }
