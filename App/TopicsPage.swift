@@ -86,7 +86,7 @@ struct TopicsPage: View {
                 }
                 if !outdated.isEmpty {
                     let (actualEmbeddingModel, items) = try await generateEmbeddings(outdated, client: rlamusClient, modelName: embeddingModel?.name)
-                    
+
                     let embeddingModelItem = if let embeddingModel {
                         embeddingModel
                     } else {
@@ -101,7 +101,6 @@ struct TopicsPage: View {
 
                 _ = await getTopics(memories, existing: topics, minSamples: 1, minClusterSize: 2)
                 try modelContext.save()
-            
             }
             if case let .failure(error) = result {
                 appLogger.error("index failed", error: error)
@@ -169,6 +168,15 @@ struct TopicsPageFolderView: View {
             }
         }
         .listStyle(.plain)
+        #if DEBUG
+            .toolbar {
+                Button("Clear", systemImage: "trash") {
+                    for topic in topics where !topic.isUserDefined {
+                        modelContext.delete(topic)
+                    }
+                }
+            }
+        #endif
     }
 
     func folderFor(topic: TopicItem) -> some View {

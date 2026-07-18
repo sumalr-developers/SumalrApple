@@ -35,8 +35,8 @@ func getTopicsInternal<M: Sequence, T: Sequence>(
         oldMembers[t.id] = Set((t.memories ?? []).map(\.id))
     }
     // memoryID -> the auto topic that currently owns it (if any)
-    var owner: [PersistentIdentifier: PersistentIdentifier] = [:]
-    for (tid, mids) in oldMembers { for m in mids { owner[m] = tid } }
+    var owner: [PersistentIdentifier: Set<PersistentIdentifier>] = [:]
+    for (tid, mids) in oldMembers { for m in mids { owner[m, default: []].insert(tid) } }
 
     // --- run HDBSCAN ---
     let memAndEmbeddings = memoryItems.compactMap { m -> MemoryEmbeddingItem? in
@@ -75,7 +75,11 @@ func getTopicsInternal<M: Sequence, T: Sequence>(
     for c in activeClusters { uf[.cluster(c.idx)] = .cluster(c.idx) }
     for c in activeClusters {
         for m in c.members {
-            if let tid = owner[m] { union(.topic(tid), .cluster(c.idx)) }
+            if let tids = owner[m] {
+                for tid in tids {
+                    union(.topic(tid), .cluster(c.idx))
+                }
+            }
         }
     }
 
