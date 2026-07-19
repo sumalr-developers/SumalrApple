@@ -98,7 +98,11 @@ func getTopicsInternal<M: Sequence, T: Sequence>(
         }
     }
     func reparent(_ topic: TopicItem, to newParent: TopicItem?) {
-        guard topic.parent?.id != newParent?.id else { return }
+        guard let parent = topic.parent else {
+            print("refuse to reparent root topics")
+            return;
+        }
+        guard parent.id != newParent?.id else { return }
         detach(topic)
         topic.parent = newParent
         if let newParent {
