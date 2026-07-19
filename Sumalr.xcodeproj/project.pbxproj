@@ -15,7 +15,6 @@
 		6A3065CC2FE2D10F00C9BE5A /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6A3065D12FE2D11500C9BE5A /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; };
 		6A3065D22FE2D11500C9BE5A /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6A3641673000879A00328A0B /* OllamaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A3641663000879A00328A0B /* OllamaKit */; };
 		6A4523D02FE398B000EA5AD2 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523CF2FE398B000EA5AD2 /* Algorithms */; };
 		6A566DA72FE52E5800378452 /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DA62FE52E5800378452 /* Transmission */; };
 		6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DB72FE54F0C00378452 /* AsyncAlgorithms */; };
@@ -236,7 +235,6 @@
 				6A566DA72FE52E5800378452 /* Transmission in Frameworks */,
 				6A6432652FE44CED00D2368A /* Logging in Frameworks */,
 				6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */,
-				6A3641673000879A00328A0B /* OllamaKit in Frameworks */,
 				6A89F415300512CA00620A16 /* Flow in Frameworks */,
 			);
 		};
@@ -352,7 +350,6 @@
 				6A6432642FE44CED00D2368A /* Logging */,
 				6A566DA62FE52E5800378452 /* Transmission */,
 				6A566DB72FE54F0C00378452 /* AsyncAlgorithms */,
-				6A3641663000879A00328A0B /* OllamaKit */,
 				6A29DB9E3002876900539268 /* ClusterKit */,
 				6A89F414300512CA00620A16 /* Flow */,
 			);
@@ -520,7 +517,6 @@
 				6A6432632FE44CED00D2368A /* XCRemoteSwiftPackageReference "swift-log" */,
 				6A64326F2FE527DE00D2368A /* XCRemoteSwiftPackageReference "Transmission" */,
 				6A566DB62FE54F0C00378452 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
-				6A3641653000879A00328A0B /* XCRemoteSwiftPackageReference "OllamaKit" */,
 				6A29DB9D300285D500539268 /* XCRemoteSwiftPackageReference "ClusterKit" */,
 				6A89F413300512CA00620A16 /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */,
 			);
@@ -1396,14 +1392,6 @@
 				minimumVersion = 0.2.0;
 			};
 		};
-		6A3641653000879A00328A0B /* XCRemoteSwiftPackageReference "OllamaKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/perlinleo/OllamaKit.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		6A566DB62FE54F0C00378452 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
@@ -1487,11 +1475,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A29DB9D300285D500539268 /* XCRemoteSwiftPackageReference "ClusterKit" */;
 			productName = ClusterKit;
-		};
-		6A3641663000879A00328A0B /* OllamaKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6A3641653000879A00328A0B /* XCRemoteSwiftPackageReference "OllamaKit" */;
-			productName = OllamaKit;
 		};
 		6A4523CF2FE398B000EA5AD2 /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -28,6 +28,12 @@
     "Delete" : {
 
     },
+    "Delete this topic?" : {
+
+    },
+    "Delete topic" : {
+
+    },
     "Discard" : {
 
     },
@@ -134,6 +140,9 @@
       }
     },
     "This memory has been deleted from the remote server, therehence impossible to retry in place. You can remove it and create a new one manually" : {
+
+    },
+    "This operation cannot be undone. Memories within this topic will not be affacted." : {
 
     },
     "Topic" : {

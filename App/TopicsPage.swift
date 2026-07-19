@@ -4,10 +4,8 @@ import Common
 import Flow
 import Foundation
 import Logging
-import OllamaKit
 import SwiftData
 import SwiftUI
-@_spi(Advanced) import SwiftUIIntrospect
 
 fileprivate enum ViewMode: Int {
     case groupList = 0
@@ -367,79 +365,6 @@ struct TopicsPageListView: View {
             }
             return TopicItem(name: name.isEmpty ? nil : name, isUserDefined: true, memories: [memory])
         }
-    }
-}
-
-struct TopicView: View {
-    let topic: TopicItem
-    var body: some View {
-        List {
-            listItems
-        }
-        .listStyle(.plain)
-        #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(Binding(get: {
-                topic.name ?? String(localized: "Unnamed topic")
-            }, set: { newValue in
-                topic.name = newValue
-            }))
-        #elseif os(macOS)
-            .toolbar(removing: .title)
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    TopicNameInput(topic: topic)
-                        .foregroundStyle(.primary)
-                        .frame(minWidth: 120)
-                }
-                .sharedBackgroundVisibility(.hidden)
-            }
-        #endif
-    }
-
-    var listItems: some View {
-        ForEach(topic.memories?.sorted(by: { $0.creation > $1.creation }) ?? []) { memory in
-            Link(destination: DeepLink.memory(taskID: memory.taskID).url) {
-                SearchPage.CandidateItem(memory)
-            }
-            .buttonStyle(.plain)
-        }
-    }
-}
-
-fileprivate struct TopicNameInput: View {
-    @Environment(\.modelContext) var modelContext
-    @Environment(\.errorHandler) var errorHandler
-
-    let topic: TopicItem
-
-    @State private var nameBuffer = ""
-
-    var body: some View {
-        TextField("Unnamed topic", text: $nameBuffer)
-        #if os(iOS)
-            .introspect(.textField, on: .iOS(.v13...)) { textField in
-                textField.clearButtonMode = .whileEditing
-            }
-        #endif
-            .textFieldStyle(.plain)
-            .submitLabel(.done)
-            .onAppear {
-                nameBuffer = topic.name ?? ""
-            }
-            .onChange(of: nameBuffer, initial: false) { _, newValue in
-                topic.name = newValue.isEmpty ? nil : newValue
-            }
-            .onSubmit {
-                _ = errorHandler.runCatching {
-                    topic.name = nameBuffer.trimmingCharacters(in: .whitespaces)
-                    if topic.name?.isEmpty == true {
-                        topic.name = nil
-                        nameBuffer = String(localized: "Unnamed topic")
-                    }
-                    try modelContext.save()
-                }
-            }
     }
 }
 

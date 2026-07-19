@@ -52,7 +52,7 @@ import WebKit
                     }
                 }
             } catch {
-                fatalError(error.localizedDescription)
+                print(error.localizedDescription)
             }
         #endif
 
