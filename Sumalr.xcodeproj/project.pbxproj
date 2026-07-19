@@ -17,7 +17,6 @@
 		6A3065D22FE2D11500C9BE5A /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0C6B42FE23C1500B2E764 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A3641673000879A00328A0B /* OllamaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A3641663000879A00328A0B /* OllamaKit */; };
 		6A4523D02FE398B000EA5AD2 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A4523CF2FE398B000EA5AD2 /* Algorithms */; };
-		6A4E7D7F3005BFEE00E9CE80 /* BinaryCodable in Frameworks */ = {isa = PBXBuildFile; productRef = 6A4E7D7E3005BFEE00E9CE80 /* BinaryCodable */; };
 		6A566DA72FE52E5800378452 /* Transmission in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DA62FE52E5800378452 /* Transmission */; };
 		6A566DB82FE54F0C00378452 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 6A566DB72FE54F0C00378452 /* AsyncAlgorithms */; };
 		6A6432652FE44CED00D2368A /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6432642FE44CED00D2368A /* Logging */; };
@@ -262,7 +261,6 @@
 		6AF0C6B12FE23C1500B2E764 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				6A4E7D7F3005BFEE00E9CE80 /* BinaryCodable in Frameworks */,
 				6A1EA75230037CF0008277C2 /* ClusterKit in Frameworks */,
 				6A159AF12FE27CBD0079C59B /* HTTPTypes in Frameworks */,
 				6A159AF92FE2A6760079C59B /* EventSource in Frameworks */,
@@ -447,7 +445,6 @@
 				6A159AF22FE284810079C59B /* HTTPTypesFoundation */,
 				6A159AF82FE2A6760079C59B /* EventSource */,
 				6A1EA75130037CF0008277C2 /* ClusterKit */,
-				6A4E7D7E3005BFEE00E9CE80 /* BinaryCodable */,
 			);
 			productName = Common;
 			productReference = 6AF0C6B42FE23C1500B2E764 /* Common.framework */;
@@ -526,7 +523,6 @@
 				6A3641653000879A00328A0B /* XCRemoteSwiftPackageReference "OllamaKit" */,
 				6A29DB9D300285D500539268 /* XCRemoteSwiftPackageReference "ClusterKit" */,
 				6A89F413300512CA00620A16 /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */,
-				6A4E7D7B3005BFDD00E9CE80 /* XCRemoteSwiftPackageReference "BinaryCodable" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -1408,14 +1404,6 @@
 				kind = branch;
 			};
 		};
-		6A4E7D7B3005BFDD00E9CE80 /* XCRemoteSwiftPackageReference "BinaryCodable" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/christophhagen/BinaryCodable";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
-			};
-		};
 		6A566DB62FE54F0C00378452 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
@@ -1509,11 +1497,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A956D872FE2FE1600834288 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
-		};
-		6A4E7D7E3005BFEE00E9CE80 /* BinaryCodable */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6A4E7D7B3005BFDD00E9CE80 /* XCRemoteSwiftPackageReference "BinaryCodable" */;
-			productName = BinaryCodable;
 		};
 		6A566DA62FE52E5800378452 /* Transmission */ = {
 			isa = XCSwiftPackageProductDependency;

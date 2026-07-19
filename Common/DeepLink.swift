@@ -1,4 +1,3 @@
-import BinaryCodable
 import Foundation
 import SwiftData
 
