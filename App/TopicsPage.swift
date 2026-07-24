@@ -97,7 +97,8 @@ struct TopicsPage: View {
                     }
                 }
 
-                _ = await getTopics(memories, existing: topics, minSamples: 1, minClusterSize: 2)
+                let modifications = getTopicModifications(memories, existing: topics, minSamples: 1, minClusterSize: 2)
+                applyTopicModifications(modifications, modelContext: modelContext)
                 try modelContext.save()
             }
             if case let .failure(error) = result {
